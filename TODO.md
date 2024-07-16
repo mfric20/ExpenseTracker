@@ -2,8 +2,9 @@
 
 ## TODO
 
-- [ ] Make it deploy
-- [ ] Create basic UI
+- [x] Make it deploy
+- [x] Add image upload
+- [x] Create basic UI
 - [ ] Set up database
 - [ ] Set up auth
 - [ ] Fill database with mock data
