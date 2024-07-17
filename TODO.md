@@ -5,7 +5,8 @@
 - [x] Make it deploy
 - [x] Add image upload
 - [x] Create basic UI
-- [ ] Set up database
+- [x] Set up database
+- [ ] Design landing page
 - [ ] Set up auth
 - [ ] Fill database with mock data
 - [ ] Load data to front-end
