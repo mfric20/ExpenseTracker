@@ -2,7 +2,7 @@ import { ModeToggle } from "~/components/ui/modetoggle";
 
 export default function TopNav() {
   return (
-    <nav className="border-secondary flex flex-row justify-between border-b p-4 text-xl font-bold">
+    <nav className="flex flex-row justify-between border-b border-secondary p-4 text-xl font-bold md:px-12">
       <div className="my-auto select-none hover:cursor-pointer">
         <span className="text-blue-600">Expense</span>Tracker
       </div>
