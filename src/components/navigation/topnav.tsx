@@ -7,7 +7,6 @@ import { signOut, useSession } from "next-auth/react";
 export default function TopNav() {
   const router = useRouter();
   const { data: session } = useSession();
-  console.log(session);
 
   return (
     <nav className="flex flex-row justify-between border-b border-secondary p-4 text-xl font-bold md:px-12">
@@ -24,7 +23,7 @@ export default function TopNav() {
         {session ? (
           <div
             onClick={() => {
-              signOut({ callbackUrl: "/login" });
+              signOut({ callbackUrl: "/signout" });
             }}
             className="m-auto select-none text-lg font-semibold hover:cursor-pointer hover:underline"
           >
