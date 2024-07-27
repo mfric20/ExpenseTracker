@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { Button } from "~/components/ui/button";
+import { useRouter } from "next/navigation";
 
 export default function HomePage() {
+  const router = useRouter();
   // const [data, setData] = useState<any>();
 
   // useEffect(() => {
@@ -34,7 +35,12 @@ export default function HomePage() {
               and receive alerts to help you stay within your means.
             </span>
             <div>
-              <Button className="text-base font-semibold">Try It Out</Button>
+              <Button
+                onClick={() => router.push("/register")}
+                className="text-base font-semibold"
+              >
+                Try It Out
+              </Button>
             </div>
           </div>
         </div>

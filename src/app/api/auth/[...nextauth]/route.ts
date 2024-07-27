@@ -61,7 +61,7 @@ export const authOptions = {
             emailVerified: googleProfile.email_verified,
             provider: "google",
             picture: googleProfile.picture,
-            userName: googleProfile.name,
+            name: googleProfile.name,
             password: "",
           });
         }

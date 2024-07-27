@@ -30,13 +30,23 @@ export default function TopNav() {
             Sign Out
           </div>
         ) : (
-          <div
-            onClick={() => {
-              router.push("/login");
-            }}
-            className="m-auto select-none text-lg font-semibold hover:cursor-pointer hover:underline"
-          >
-            Sign In
+          <div className="flex flex-row gap-3">
+            <div
+              onClick={() => {
+                router.push("/register");
+              }}
+              className="m-auto select-none text-lg font-bold text-blue-600 hover:cursor-pointer hover:underline"
+            >
+              Sign Up
+            </div>
+            <div
+              onClick={() => {
+                router.push("/login");
+              }}
+              className="m-auto select-none text-lg font-semibold hover:cursor-pointer hover:underline"
+            >
+              Sign In
+            </div>
           </div>
         )}
       </div>

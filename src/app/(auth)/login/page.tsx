@@ -16,7 +16,7 @@ import {
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
 
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const formSchema = z.object({
@@ -32,6 +32,7 @@ export default function LoginPage() {
   const [loginError, setLoginError] = useState<boolean>(false);
 
   const searchParams = useSearchParams();
+  const router = useRouter();
 
   useEffect(() => {
     if (searchParams.get("error") == "invalidCredentials") {
@@ -105,13 +106,16 @@ export default function LoginPage() {
                   />
                 </div>
                 <Button type="submit" className="w-full">
-                  Submit
+                  Log in
                 </Button>
               </form>
             </Form>
             <div className="text-sm text-primary">
               Don't have an account?{" "}
-              <span className="text-blue-600 hover:cursor-pointer hover:underline">
+              <span
+                onClick={() => router.push("/register")}
+                className="text-blue-600 hover:cursor-pointer hover:underline"
+              >
                 Create one!
               </span>
             </div>
