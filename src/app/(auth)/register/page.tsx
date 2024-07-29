@@ -1,6 +1,5 @@
 "use client";
 
-import { signIn } from "next-auth/react";
 import { Button } from "~/components/ui/button";
 
 import { z } from "zod";
@@ -16,8 +15,8 @@ import {
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
 
-import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 
 const formSchema = z
   .object({
@@ -44,9 +43,19 @@ export default function RegisterPage() {
     },
   });
 
+  const registerMutation = useMutation({
+    mutationKey: ["registration"],
+    mutationFn: async (user: z.infer<typeof formSchema>) => {
+      const response = await axios.post("/api/auth/register", user);
+      return response.data;
+    },
+  });
+
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+    registerMutation.mutate(values);
   }
+
+  if (registerMutation.isSuccess) console.log(registerMutation.data);
 
   return (
     <div className="flex justify-center pt-32">
@@ -64,6 +73,7 @@ export default function RegisterPage() {
                 <div className="flex flex-col gap-2">
                   <FormField
                     control={form.control}
+                    defaultValue=""
                     name="name"
                     render={({ field }) => (
                       <FormItem>
@@ -78,6 +88,7 @@ export default function RegisterPage() {
                   <FormField
                     control={form.control}
                     name="email"
+                    defaultValue=""
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Email</FormLabel>
@@ -94,6 +105,7 @@ export default function RegisterPage() {
                   <FormField
                     control={form.control}
                     name="password"
+                    defaultValue=""
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Password</FormLabel>
@@ -111,6 +123,7 @@ export default function RegisterPage() {
                   <FormField
                     control={form.control}
                     name="confirmPassword"
+                    defaultValue=""
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Confirm password</FormLabel>
@@ -127,7 +140,11 @@ export default function RegisterPage() {
                   />
                 </div>
                 <Button type="submit" className="w-full">
-                  Register
+                  {registerMutation.isPending ? (
+                    <>Submiting...</>
+                  ) : (
+                    <>Register</>
+                  )}
                 </Button>
               </form>
             </Form>

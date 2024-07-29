@@ -1,11 +1,11 @@
 import "~/styles/globals.css";
-
 import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
 import TopNav from "~/components/navigation/topnav";
 import { ThemeProvider } from "~/components/ui/theme-provider";
 import { getServerSession } from "next-auth";
 import SessionProvider from "~/components/auth/sessionProvider";
+import Providers from "./providers";
 
 export const metadata: Metadata = {
   title: "Expense tracker",
@@ -29,7 +29,7 @@ export default async function RootLayout({
             disableTransitionOnChange
           >
             <TopNav />
-            {children}
+            <Providers>{children}</Providers>
           </ThemeProvider>
         </body>
       </SessionProvider>

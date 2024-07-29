@@ -5,15 +5,7 @@ import { useRouter } from "next/navigation";
 
 export default function HomePage() {
   const router = useRouter();
-  // const [data, setData] = useState<any>();
 
-  // useEffect(() => {
-  //   fetch("/api/test")
-  //     .then((res) => res.json())
-  //     .then((data) => setData(data));
-  // }, []);
-
-  // console.log(data);
   return (
     <main className="px-auto w-full md:px-40 md:py-32">
       <div className="flex flex-col gap-14 md:w-full md:flex-row md:justify-between">
