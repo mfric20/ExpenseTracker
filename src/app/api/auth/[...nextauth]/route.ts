@@ -64,9 +64,11 @@ export const authOptions = {
             name: googleProfile.name,
             password: "",
           });
+
+          return true;
         }
 
-        return true;
+        throw new Error("emailError");
       } else if (signInInfo.account.provider === "credentials") {
         return true;
       }

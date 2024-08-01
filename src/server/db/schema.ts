@@ -4,6 +4,7 @@ import {
   uuid,
   varchar,
   boolean,
+  integer,
 } from "drizzle-orm/pg-core";
 
 export const createTable = pgTableCreator((name) => `ExpenseTracker_${name}`);
@@ -16,4 +17,5 @@ export const users = createTable("users", {
   provider: varchar("provider", { length: 256 }),
   password: varchar("password", { length: 256 }),
   picture: varchar("picture"),
+  verificationCode: integer("verificationCode"),
 });

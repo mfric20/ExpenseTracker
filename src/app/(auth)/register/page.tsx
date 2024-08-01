@@ -17,6 +17,9 @@ import { Input } from "~/components/ui/input";
 
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
+import { TError } from "~/types/types";
+
+import { useState } from "react";
 
 const formSchema = z
   .object({
@@ -35,6 +38,8 @@ const formSchema = z
   });
 
 export default function RegisterPage() {
+  const [errorMessage, setErrorMessage] = useState<String>("");
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -49,13 +54,18 @@ export default function RegisterPage() {
       const response = await axios.post("/api/auth/register", user);
       return response.data;
     },
+    onSuccess: (data, variables, context) => {
+      console.log(data);
+    },
+    onError: (error: TError, variables, context) => {
+      setErrorMessage(error.response.statusText);
+    },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
+    setErrorMessage("");
     registerMutation.mutate(values);
   }
-
-  if (registerMutation.isSuccess) console.log(registerMutation.data);
 
   return (
     <div className="flex justify-center pt-32">
@@ -64,6 +74,11 @@ export default function RegisterPage() {
           <span className="text-blue-600">Expense</span>Tracker
         </div>
         <div>
+          {errorMessage != "" ? (
+            <div className="text-center text-sm text-red-500">
+              {errorMessage}
+            </div>
+          ) : null}
           <div className="flex flex-col gap-6">
             <Form {...form}>
               <form

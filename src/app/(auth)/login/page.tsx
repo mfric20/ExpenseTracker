@@ -30,6 +30,7 @@ const formSchema = z.object({
 
 export default function LoginPage() {
   const [loginError, setLoginError] = useState<boolean>(false);
+  const [emailError, setEmailError] = useState<boolean>(false);
 
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -37,6 +38,8 @@ export default function LoginPage() {
   useEffect(() => {
     if (searchParams.get("error") == "invalidCredentials") {
       setLoginError(true);
+    } else if (searchParams.get("error") == "emailError") {
+      setEmailError(true);
     }
   }, []);
 
@@ -62,6 +65,11 @@ export default function LoginPage() {
           {loginError ? (
             <div className="text-center text-sm text-red-500">
               Invalid email or password!
+            </div>
+          ) : null}
+          {emailError ? (
+            <div className="text-center text-sm text-red-500">
+              Account with this email is already registered!
             </div>
           ) : null}
           <div className="flex flex-col gap-6">

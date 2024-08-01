@@ -1,5 +1,5 @@
 {
-  "id": "9080e4eb-5b3a-4b60-9a99-a174cc4d05ca",
+  "id": "67bbd146-fae8-4d69-be4b-8cd67a4a736a",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "6",
   "dialect": "postgresql",
@@ -11,9 +11,8 @@
         "id": {
           "name": "id",
           "type": "uuid",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "gen_random_uuid()"
+          "primaryKey": true,
+          "notNull": true
         },
         "name": {
           "name": "name",
@@ -48,6 +47,12 @@
         "picture": {
           "name": "picture",
           "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "verificationCode": {
+          "name": "verificationCode",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false
         }
