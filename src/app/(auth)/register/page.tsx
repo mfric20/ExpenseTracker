@@ -21,6 +21,8 @@ import { TError } from "~/types/types";
 
 import { useState } from "react";
 
+import { useRouter } from "next/navigation";
+
 const formSchema = z
   .object({
     name: z.string().min(2, { message: "Name must be at least 3 characters." }),
@@ -40,6 +42,8 @@ const formSchema = z
 export default function RegisterPage() {
   const [errorMessage, setErrorMessage] = useState<String>("");
 
+  const router = useRouter();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -55,7 +59,7 @@ export default function RegisterPage() {
       return response.data;
     },
     onSuccess: (data, variables, context) => {
-      console.log(data);
+      router.push(`/register/verification/${data.userId}`);
     },
     onError: (error: TError, variables, context) => {
       setErrorMessage(error.response.statusText);

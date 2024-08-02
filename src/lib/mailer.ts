@@ -1,4 +1,3 @@
-// app/api/send-email/route.ts
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 
@@ -18,8 +17,8 @@ export async function sendEmail(
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: process.env.GMAIL_USER, // Your Gmail email address
-        pass: process.env.GMAIL_PASSWORD, // Your Gmail app password
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_PASSWORD,
       },
     });
 
@@ -27,7 +26,7 @@ export async function sendEmail(
       from: `<${process.env.GMAIL_USER}>`,
       to: email,
       subject: subject,
-      text: message,
+      html: message,
     });
 
     console.log(`Message sent to: ${email}`);

@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 import bcrypt from "bcrypt";
 import { sendEmail } from "~/lib/mailer";
 
-export async function POST(req: Request, res: Response) {
+export async function POST(req: Request) {
   const values = await req.json();
 
   //Check if user with email already exists
@@ -41,7 +41,7 @@ export async function POST(req: Request, res: Response) {
   await sendEmail(
     values.email,
     "ExpenseTracker - Verification code",
-    `Welcome to ExpenseTracker, your verification code is ${verificationCode}`,
+    `<p>Welcome to ExpenseTracker, your verification code is <h1>${verificationCode}</h1></p>`,
   );
 
   return new Response(JSON.stringify({ userId }));
