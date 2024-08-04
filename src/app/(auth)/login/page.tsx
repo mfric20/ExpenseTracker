@@ -19,6 +19,9 @@ import { Input } from "~/components/ui/input";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+
 const formSchema = z.object({
   email: z.string().min(2, {
     message: "Email must be at least 2 characters.",
@@ -30,16 +33,28 @@ const formSchema = z.object({
 
 export default function LoginPage() {
   const [loginError, setLoginError] = useState<boolean>(false);
-  const [emailError, setEmailError] = useState<boolean>(false);
+  const [emailNoVerifiedError, setEmailNotVerifiedError] =
+    useState<boolean>(false);
 
   const searchParams = useSearchParams();
   const router = useRouter();
 
+  const resendVerificationMutation = useMutation({
+    mutationKey: ["resendVerification"],
+    mutationFn: async (user: z.infer<typeof formSchema>) => {
+      const response = await axios.post("/api/auth/register", user);
+      return response.data;
+    },
+    onSettled: (data, variables, context) => {
+      router.push(`/register/verification/${data.userId}`);
+    },
+  });
+
   useEffect(() => {
     if (searchParams.get("error") == "invalidCredentials") {
       setLoginError(true);
-    } else if (searchParams.get("error") == "emailError") {
-      setEmailError(true);
+    } else if (searchParams.get("error") == "emailNotVerified") {
+      setEmailNotVerifiedError(true);
     }
   }, []);
 
@@ -55,6 +70,8 @@ export default function LoginPage() {
     signIn("credentials", values, { callbackurl: "/" });
   }
 
+  async function resendVerificationCode() {}
+
   return (
     <div className="flex justify-center pt-32">
       <div className="m-6 flex w-full flex-col gap-8 rounded-sm border-2 p-10 md:m-0 md:w-1/5">
@@ -67,9 +84,17 @@ export default function LoginPage() {
               Invalid email or password!
             </div>
           ) : null}
-          {emailError ? (
-            <div className="text-center text-sm text-red-500">
-              Account with this email is already registered!
+          {emailNoVerifiedError ? (
+            <div className="mb-3 flex flex-col gap-2 text-center text-sm text-red-500">
+              <span>Email is not verified! </span>
+              <div>
+                <Button
+                  onClick={resendVerificationCode}
+                  variant={"destructive"}
+                >
+                  Resend verification code!
+                </Button>
+              </div>
             </div>
           ) : null}
           <div className="flex flex-col gap-6">

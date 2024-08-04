@@ -9,6 +9,7 @@
 - [x] Design landing page
 - [x] Set up Google auth
 - [ ] Set up credentials auth
+- [ ] Update mobile design
 - [ ] Create/Edit/Delete profile
 - [ ] Fill database with mock data
 - [ ] Load data to front-end
