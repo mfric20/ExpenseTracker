@@ -6,11 +6,13 @@
 - [x] Add image upload
 - [x] Create basic UI
 - [x] Set up database
-- [ ] Design landing page
-- [ ] Set up auth
+- [x] Design landing page
+- [x] Set up Google auth
+- [x] Set up credentials auth
+- [x] Update mobile design
+- [ ] Create/Edit/Delete profile
 - [ ] Fill database with mock data
 - [ ] Load data to front-end
 - [ ] Error management
-- [ ] Create/Edit/Delete profile
 - [ ] Add balance feature
 - [ ] Add expenses feature

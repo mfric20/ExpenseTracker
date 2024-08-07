@@ -8,5 +8,5 @@ export default {
   dbCredentials: {
     url: env.POSTGRES_URL,
   },
-  tablesFilter: ["expense_tracker_*"],
+  tablesFilter: ["ExpenseTracker_*"],
 } satisfies Config;
