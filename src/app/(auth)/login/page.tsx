@@ -41,11 +41,17 @@ export default function LoginPage() {
 
   const resendVerificationMutation = useMutation({
     mutationKey: ["resendVerification"],
-    mutationFn: async (user: z.infer<typeof formSchema>) => {
-      const response = await axios.post("/api/auth/register", user);
+    mutationFn: async (email: string) => {
+      const response = await axios.put(
+        "/api/auth/register/verification",
+        JSON.stringify({
+          email: email,
+        }),
+      );
       return response.data;
     },
     onSettled: (data, variables, context) => {
+      console.log(data);
       router.push(`/register/verification/${data.userId}`);
     },
   });
@@ -70,7 +76,10 @@ export default function LoginPage() {
     signIn("credentials", values, { callbackurl: "/" });
   }
 
-  async function resendVerificationCode() {}
+  async function resendVerificationCode() {
+    const email = searchParams.get("email") as string;
+    resendVerificationMutation.mutate(email);
+  }
 
   return (
     <div className="flex justify-center pt-32">
@@ -89,7 +98,9 @@ export default function LoginPage() {
               <span>Email is not verified! </span>
               <div>
                 <Button
-                  onClick={resendVerificationCode}
+                  onClick={() => {
+                    resendVerificationCode();
+                  }}
                   variant={"destructive"}
                 >
                   Resend verification code!

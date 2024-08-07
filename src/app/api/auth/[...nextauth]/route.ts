@@ -28,7 +28,8 @@ export const authOptions = {
 
         const user = query[0];
 
-        if (user?.emailVerified == false) throw new Error("emailNotVerified");
+        if (user?.emailVerified == false)
+          throw new Error(`emailNotVerified&email=${user?.email}`);
 
         const passwordMatch = await bcrypt.compare(
           password,

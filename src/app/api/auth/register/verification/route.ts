@@ -1,4 +1,5 @@
 import { eq } from "drizzle-orm";
+import { sendEmail } from "~/lib/mailer";
 import { db } from "~/server/db";
 import { users } from "~/server/db/schema";
 
@@ -21,4 +22,34 @@ export async function POST(req: Request) {
     status: 403,
     statusText: "Wrong verification code!",
   });
+}
+
+export async function PUT(req: Request) {
+  const body = await req.json();
+  const email = body?.email;
+
+  const verificationCode =
+    Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
+  try {
+    const query: { userId: string }[] = await db
+      .update(users)
+      .set({ verificationCode: verificationCode })
+      .where(eq(users.email, email))
+      .returning({ userId: users.id });
+
+    const userId = query[0]?.userId;
+
+    await sendEmail(
+      email,
+      "ExpenseTracker - Verification code",
+      `<p>Welcome to ExpenseTracker, your verification code is <h1>${verificationCode}</h1></p>`,
+    );
+
+    return new Response(JSON.stringify({ userId }));
+  } catch (error) {
+    return new Response(JSON.stringify({ error: "Something went wrong!" }), {
+      status: 400,
+      statusText: "Something went wrong!",
+    });
+  }
 }

@@ -8,8 +8,8 @@
 - [x] Set up database
 - [x] Design landing page
 - [x] Set up Google auth
-- [ ] Set up credentials auth
-- [ ] Update mobile design
+- [x] Set up credentials auth
+- [x] Update mobile design
 - [ ] Create/Edit/Delete profile
 - [ ] Fill database with mock data
 - [ ] Load data to front-end
