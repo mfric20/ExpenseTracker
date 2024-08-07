@@ -51,8 +51,17 @@ export default function LoginPage() {
       return response.data;
     },
     onSettled: (data, variables, context) => {
-      console.log(data);
       router.push(`/register/verification/${data.userId}`);
+    },
+  });
+
+  const loginMutation = useMutation({
+    mutationKey: ["loginMutation"],
+    mutationFn: async (values: z.infer<typeof formSchema>) => {
+      signIn("credentials", values, { callbackurl: "/" });
+    },
+    onSuccess: (data, variables, context) => {
+      router.push(`/`);
     },
   });
 
@@ -150,7 +159,7 @@ export default function LoginPage() {
                   />
                 </div>
                 <Button type="submit" className="w-full">
-                  Log in
+                  {loginMutation.isPending ? <>Submiting...</> : <>Sign in</>}
                 </Button>
               </form>
             </Form>
