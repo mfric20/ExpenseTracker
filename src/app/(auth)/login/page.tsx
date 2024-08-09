@@ -157,6 +157,11 @@ export default function LoginPage() {
                       </FormItem>
                     )}
                   />
+                  <div className="flex justify-end text-sm">
+                    <div onClick={() => router.push("/resetPassword")} className="hover:cursor-pointer hover:underline">
+                      Forgot your password?
+                    </div>
+                  </div>
                 </div>
                 <Button type="submit" className="w-full">
                   {loginMutation.isPending ? <>Submiting...</> : <>Sign in</>}
@@ -178,7 +183,7 @@ export default function LoginPage() {
         <div className="relative flex items-center">
           <div className="flex-grow border-t border-primary opacity-70"></div>
           <span className="mx-4 flex-shrink font-semibold text-primary opacity-90">
-            OR
+
           </span>
           <div className="flex-grow border-t border-primary opacity-70"></div>
         </div>
