@@ -10,6 +10,7 @@
 - [x] Set up Google auth
 - [x] Set up credentials aut
 - [x] Update mobile design
+- [x] Add password reset
 - [ ] Create/Edit/Delete profile
 - [ ] Fill database with mock data
 - [ ] Load data to front-end

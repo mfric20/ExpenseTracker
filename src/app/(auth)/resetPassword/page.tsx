@@ -17,7 +17,6 @@ import { Input } from "~/components/ui/input";
 
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import { useState } from "react";
 
 const formSchema = z.object({
   email: z.string().min(2, {
@@ -31,7 +30,7 @@ export default function ResetPasswordPage() {
     defaultValues: {
       email: "",
     },
-  });
+  })
 
   const resetPasswordMutation = useMutation({
     mutationKey: ["resetPasswordMutation"],
