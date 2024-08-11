@@ -84,6 +84,7 @@ export default function ResetPasswordPage() {
         </div>
         <div className="flex justify-center font-semibold">
           {resetPasswordMutation.isSuccess ? <div>Email for password reset sent!</div> : <></>}
+          {resetPasswordMutation.isError ? <div className="text-red-600">User with this email not found!</div> : <></>}
         </div>
       </div>
     </div>

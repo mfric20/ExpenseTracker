@@ -12,6 +12,10 @@ export async function POST(req: Request) {
 
   const pageUrl = process.env.PAGE_URL;
 
+  if (!user) {
+    return new Response(JSON.stringify({ error: "No user with that email!" }), { status: 403 })
+  }
+
   await sendEmail(
     values.email,
     "ExpenseTracker - Password reset",
