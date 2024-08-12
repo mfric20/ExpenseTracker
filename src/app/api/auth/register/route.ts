@@ -32,7 +32,7 @@ export async function POST(req: Request) {
     emailVerified: false,
     name: values.name,
     password: hashPassword,
-    picture:
+    image:
       "https://utfs.io/f/1a65c421-0ed1-4510-a492-54e9257e451c-n1chqy.jpg",
     provider: "credentials",
     verificationCode: verificationCode,

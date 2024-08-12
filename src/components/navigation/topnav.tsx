@@ -3,6 +3,10 @@
 import { useRouter } from "next/navigation";
 import { ModeToggle } from "~/components/ui/modetoggle";
 import { signOut, useSession } from "next-auth/react";
+import {
+  Avatar,
+  AvatarImage,
+} from "~/components/ui/avatar"
 
 export default function TopNav() {
   const router = useRouter();
@@ -20,14 +24,21 @@ export default function TopNav() {
       </div>
       <div className="flex flex-row gap-4">
         <ModeToggle />
-        {session ? (
-          <div
-            onClick={() => {
-              signOut({ callbackUrl: "/signout" });
-            }}
-            className="m-auto select-none text-lg font-semibold hover:cursor-pointer hover:underline"
-          >
-            Sign Out
+        {session && session.user ? (
+          <div className="flex flex-row gap-2">
+            <div className="m-auto">
+              <Avatar>
+                <AvatarImage src={session.user.image || ""} alt={session.user.name || ""} />
+              </Avatar>
+            </div>
+            <div
+              onClick={() => {
+                signOut({ callbackUrl: "/signout" });
+              }}
+              className="m-auto select-none text-lg font-semibold hover:cursor-pointer hover:underline"
+            >
+              Sign Out
+            </div>
           </div>
         ) : (
           <div className="flex flex-row gap-3">

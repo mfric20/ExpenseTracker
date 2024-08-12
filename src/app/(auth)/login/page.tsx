@@ -32,9 +32,7 @@ const formSchema = z.object({
 });
 
 export default function LoginPage() {
-  const [loginError, setLoginError] = useState<boolean>(false);
-  const [emailNoVerifiedError, setEmailNotVerifiedError] =
-    useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -51,16 +49,27 @@ export default function LoginPage() {
       return response.data;
     },
     onSettled: (data, variables, context) => {
-      console.log(data);
       router.push(`/register/verification/${data.userId}`);
+    },
+  });
+
+  const loginMutation = useMutation({
+    mutationKey: ["loginMutation"],
+    mutationFn: async (values: z.infer<typeof formSchema>) => {
+      signIn("credentials", values, { callbackurl: "/" });
+    },
+    onSuccess: (data, variables, context) => {
+      router.push(`/`);
     },
   });
 
   useEffect(() => {
     if (searchParams.get("error") == "invalidCredentials") {
-      setLoginError(true);
+      setErrorMessage("invalidCredentials");
     } else if (searchParams.get("error") == "emailNotVerified") {
-      setEmailNotVerifiedError(true);
+      setErrorMessage("emailNotVerified");
+    } else if (searchParams.get("error") == "emailError") {
+      setErrorMessage("emailError")
     }
   }, []);
 
@@ -88,12 +97,12 @@ export default function LoginPage() {
           <span className="text-blue-600">Expense</span>Tracker
         </div>
         <div>
-          {loginError ? (
+          {errorMessage == "invalidCredentials" ? (
             <div className="text-center text-sm text-red-500">
               Invalid email or password!
             </div>
           ) : null}
-          {emailNoVerifiedError ? (
+          {errorMessage == "emailNotVerified" ? (
             <div className="mb-3 flex flex-col gap-2 text-center text-sm text-red-500">
               <span>Email is not verified! </span>
               <div>
@@ -106,6 +115,11 @@ export default function LoginPage() {
                   Resend verification code!
                 </Button>
               </div>
+            </div>
+          ) : null}
+          {errorMessage == "emailError" ? (
+            <div className="text-center text-sm text-red-500">
+              Email used in Google account!
             </div>
           ) : null}
           <div className="flex flex-col gap-6">
@@ -148,9 +162,14 @@ export default function LoginPage() {
                       </FormItem>
                     )}
                   />
+                  <div className="flex justify-end text-sm">
+                    <div onClick={() => router.push("/resetPassword")} className="hover:cursor-pointer hover:underline">
+                      Forgot your password?
+                    </div>
+                  </div>
                 </div>
                 <Button type="submit" className="w-full">
-                  Log in
+                  {loginMutation.isPending ? <>Submiting...</> : <>Sign in</>}
                 </Button>
               </form>
             </Form>

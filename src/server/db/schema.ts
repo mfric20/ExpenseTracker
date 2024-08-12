@@ -1,5 +1,4 @@
 import {
-  serial,
   pgTableCreator,
   uuid,
   varchar,
@@ -16,6 +15,6 @@ export const users = createTable("users", {
   emailVerified: boolean("emailVerified"),
   provider: varchar("provider", { length: 256 }),
   password: varchar("password", { length: 256 }),
-  picture: varchar("picture"),
+  image: varchar("image"),
   verificationCode: integer("verificationCode"),
 });
