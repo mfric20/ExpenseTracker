@@ -63,8 +63,8 @@ export default function ResetPasswordPage() {
                     name="email"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Email</FormLabel>
                         <FormControl>
+                          <FormLabel>Email</FormLabel>
                           <Input
                             placeholder="Your email address..."
                             {...field}

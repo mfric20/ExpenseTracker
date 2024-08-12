@@ -32,9 +32,7 @@ const formSchema = z.object({
 });
 
 export default function LoginPage() {
-  const [loginError, setLoginError] = useState<boolean>(false);
-  const [emailNoVerifiedError, setEmailNotVerifiedError] =
-    useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -67,9 +65,11 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (searchParams.get("error") == "invalidCredentials") {
-      setLoginError(true);
+      setErrorMessage("invalidCredentials");
     } else if (searchParams.get("error") == "emailNotVerified") {
-      setEmailNotVerifiedError(true);
+      setErrorMessage("emailNotVerified");
+    } else if (searchParams.get("error") == "emailError") {
+      setErrorMessage("emailError")
     }
   }, []);
 
@@ -97,12 +97,12 @@ export default function LoginPage() {
           <span className="text-blue-600">Expense</span>Tracker
         </div>
         <div>
-          {loginError ? (
+          {errorMessage == "invalidCredentials" ? (
             <div className="text-center text-sm text-red-500">
               Invalid email or password!
             </div>
           ) : null}
-          {emailNoVerifiedError ? (
+          {errorMessage == "emailNotVerified" ? (
             <div className="mb-3 flex flex-col gap-2 text-center text-sm text-red-500">
               <span>Email is not verified! </span>
               <div>
@@ -115,6 +115,11 @@ export default function LoginPage() {
                   Resend verification code!
                 </Button>
               </div>
+            </div>
+          ) : null}
+          {errorMessage == "emailError" ? (
+            <div className="text-center text-sm text-red-500">
+              Email used in Google account!
             </div>
           ) : null}
           <div className="flex flex-col gap-6">
@@ -183,7 +188,7 @@ export default function LoginPage() {
         <div className="relative flex items-center">
           <div className="flex-grow border-t border-primary opacity-70"></div>
           <span className="mx-4 flex-shrink font-semibold text-primary opacity-90">
-
+            OR
           </span>
           <div className="flex-grow border-t border-primary opacity-70"></div>
         </div>

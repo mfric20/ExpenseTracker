@@ -1,13 +1,13 @@
-import { eq } from "drizzle-orm";
-import NextAuth, { Awaitable } from "next-auth";
+import { and, eq } from "drizzle-orm";
+import NextAuth, { User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import { GoogleProfile } from "next-auth/providers/google";
 import { db } from "~/server/db";
 import { users } from "~/server/db/schema";
-import { v4 as uuidv4 } from "uuid";
-import { User } from "next-auth";
+import { v4 as uuidv4, v1 } from "uuid";
 import bcrypt from "bcrypt";
+import { JWT } from "next-auth/jwt";
 
 export const authOptions = {
   providers: [
@@ -24,7 +24,10 @@ export const authOptions = {
         const query = await db
           .select()
           .from(users)
-          .where(eq(users.email, email) && eq(users.provider, "credentials"));
+          .where(and(eq(users.email, email), eq(users.provider, "credentials")));
+
+        if (query.length < 1)
+          throw new Error("invalidCredentials")
 
         const user = query[0];
 
@@ -52,26 +55,30 @@ export const authOptions = {
     async signIn(signInInfo: any) {
       if (signInInfo.account.provider === "google") {
         const googleProfile = signInInfo.profile as GoogleProfile;
-        const user = await db
+        const query = await db
           .select()
           .from(users)
           .where(eq(users.email, googleProfile.email));
 
-        if (user.length === 0) {
+        if (query.length === 0) {
           await db.insert(users).values({
             id: uuidv4(),
             email: googleProfile.email,
             emailVerified: googleProfile.email_verified,
             provider: "google",
-            picture: googleProfile.picture,
+            image: googleProfile.picture,
             name: googleProfile.name,
             password: "",
           });
-
-          return true;
         }
 
-        throw new Error("emailError");
+        if (query.length > 0) {
+          const user = query[0];
+          if (user?.provider != "google")
+            throw new Error("emailError");
+        }
+        return true;
+
       } else if (signInInfo.account.provider === "credentials") {
       }
       return true;
@@ -82,7 +89,13 @@ export const authOptions = {
       }
       return "/";
     },
+    async jwt({ token, user }: { token: JWT, user: User }) {
+      if (user)
+        token.picture = user.image;
+      return token
+    }
   },
+
   pages: {
     signIn: "/login",
     error: "/login",
