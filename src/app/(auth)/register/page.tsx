@@ -169,7 +169,10 @@ export default function RegisterPage() {
             </Form>
             <div className="text-sm text-primary">
               Have an account?{" "}
-              <span className="text-blue-600 hover:cursor-pointer hover:underline">
+              <span
+                onClick={() => router.push("/login")}
+                className="text-blue-600 hover:cursor-pointer hover:underline"
+              >
                 Log in here!
               </span>
             </div>

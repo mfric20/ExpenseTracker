@@ -69,7 +69,7 @@ export default function LoginPage() {
     } else if (searchParams.get("error") == "emailNotVerified") {
       setErrorMessage("emailNotVerified");
     } else if (searchParams.get("error") == "emailError") {
-      setErrorMessage("emailError")
+      setErrorMessage("emailError");
     }
   }, []);
 
@@ -119,7 +119,7 @@ export default function LoginPage() {
           ) : null}
           {errorMessage == "emailError" ? (
             <div className="text-center text-sm text-red-500">
-              Email used in Google account!
+              Email address already in use!
             </div>
           ) : null}
           <div className="flex flex-col gap-6">
@@ -163,7 +163,10 @@ export default function LoginPage() {
                     )}
                   />
                   <div className="flex justify-end text-sm">
-                    <div onClick={() => router.push("/resetPassword")} className="hover:cursor-pointer hover:underline">
+                    <div
+                      onClick={() => router.push("/resetPassword")}
+                      className="hover:cursor-pointer hover:underline"
+                    >
                       Forgot your password?
                     </div>
                   </div>
