@@ -11,7 +11,8 @@
 -   [x] Set up credentials aut
 -   [x] Update mobile design
 -   [x] Add password reset
--   [ ] Build top nav breadcrumb
+-   [x] Build top nav breadcrumb
+-   [ ] Add hamburger menu on mobile view
 -   [ ] Create/Edit/Delete profile
 -   [ ] Fill database with mock data
 -   [ ] Load data to front-end
