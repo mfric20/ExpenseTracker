@@ -1,16 +1,30 @@
 "use client";
 
 import { useRouter, usePathname } from "next/navigation";
-import { ModeToggle } from "~/components/ui/modetoggle";
-import { signOut, useSession } from "next-auth/react";
-import { Avatar, AvatarImage } from "~/components/ui/avatar";
+import { Bars3Icon } from "@heroicons/react/24/outline";
+import { useSession } from "next-auth/react";
+import { useState, useEffect } from "react";
+import PcNavBar from "./pcNavBar";
 
 export default function TopNav() {
+    const [screenWidth, setScreenWidth] = useState(0);
     const router = useRouter();
     const { data: session } = useSession();
     const path = usePathname();
 
     const paths = path?.split("/").filter((path) => path != "");
+
+    useEffect(() => {
+        const updateWidth = () => {
+            setScreenWidth(window.innerWidth);
+        };
+
+        updateWidth();
+
+        window.addEventListener("resize", updateWidth);
+
+        return () => window.removeEventListener("resize", updateWidth);
+    }, []);
 
     return (
         <nav className="flex flex-row justify-between border-b border-secondary p-4 text-xl font-bold md:px-36">
@@ -30,9 +44,9 @@ export default function TopNav() {
                             return (
                                 <div
                                     key={paths?.indexOf(path)}
-                                    className="flex text-center flex-row gap-2 text-lg mt-[1px] font-normal text-slate-200"
+                                    className="flex text-center flex-row gap-2 text-lg mt-[1px] font-normal opacity-75"
                                 >
-                                    <span className="text-slate-400">/</span>
+                                    <span className="text-slate-500">/</span>
                                     <span>{path}</span>
                                 </div>
                             );
@@ -40,50 +54,13 @@ export default function TopNav() {
                     </div>
                 </div>
             </div>
-            <div className="flex flex-row gap-4">
-                <ModeToggle />
-                {session && session.user ? (
-                    <div className="flex flex-row gap-4">
-                        <div className="m-auto">
-                            <Avatar>
-                                <AvatarImage
-                                    onClick={() => router.push(`/profile`)}
-                                    className="hover:cursor-pointer"
-                                    src={session.user.image || ""}
-                                    alt={session.user.name || ""}
-                                />
-                            </Avatar>
-                        </div>
-                        <div
-                            onClick={() => {
-                                signOut({ callbackUrl: "/signout" });
-                            }}
-                            className="m-auto select-none text-lg font-semibold hover:cursor-pointer hover:underline"
-                        >
-                            Sign Out
-                        </div>
-                    </div>
-                ) : (
-                    <div className="flex flex-row gap-3">
-                        <div
-                            onClick={() => {
-                                router.push("/register");
-                            }}
-                            className="m-auto select-none text-lg font-bold text-blue-600 hover:cursor-pointer hover:underline"
-                        >
-                            Sign Up
-                        </div>
-                        <div
-                            onClick={() => {
-                                router.push("/login");
-                            }}
-                            className="m-auto select-none text-lg font-semibold hover:cursor-pointer hover:underline"
-                        >
-                            Sign In
-                        </div>
-                    </div>
-                )}
-            </div>
+            {screenWidth < 900 ? (
+                <div>
+                    <Bars3Icon className="size-8" />
+                </div>
+            ) : (
+                <PcNavBar />
+            )}
         </nav>
     );
 }
