@@ -8,6 +8,7 @@ import { Avatar, AvatarImage } from "~/components/ui/avatar";
 export default function PcNavBar() {
     const { data: session } = useSession();
     const router = useRouter();
+
     return (
         <div className="flex flex-row gap-4">
             <ModeToggle />

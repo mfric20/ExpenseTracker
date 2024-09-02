@@ -12,7 +12,8 @@
 -   [x] Update mobile design
 -   [x] Add password reset
 -   [x] Build top nav breadcrumb
--   [ ] Add hamburger menu on mobile view
+-   [x] Add hamburger menu on mobile view
+-   [x] Make humburger menu functional
 -   [ ] Create/Edit/Delete profile
 -   [ ] Fill database with mock data
 -   [ ] Load data to front-end

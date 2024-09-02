@@ -15,8 +15,8 @@ export default function TopNav({
 }: ChildComponentProps) {
     const [screenWidth, setScreenWidth] = useState(0);
 
-    const router = useRouter();
     const { data: session } = useSession();
+    const router = useRouter();
     const path = usePathname();
 
     const paths = path?.split("/").filter((path) => path != "");
@@ -27,7 +27,6 @@ export default function TopNav({
         };
 
         updateWidth();
-
         window.addEventListener("resize", updateWidth);
 
         return () => window.removeEventListener("resize", updateWidth);
