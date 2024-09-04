@@ -37,19 +37,18 @@ export default function ProfilePage() {
         },
     });
 
-    function onSubmit(values: z.infer<typeof formSchema>) {}
-
+    console.log(session);
     return (
         <div>
             {session?.user ? (
                 <div className="flex flex-row justify-center md:py-32">
-                    <div className="rounded-sm border-2 flex flex-col gap-8 md:justify-center md:flex-row ">
+                    <div className="drop-shadow-lg p-2 rounded-sm flex flex-col gap-8 md:justify-center md:flex-row ">
                         <div className="flex p-10 flex-col gap-4 justify-center">
                             <img
                                 src={session.user?.image ?? ""}
-                                className="rounded-lg"
+                                className="rounded-full w-3/4 m-auto flex"
                             />
-                            <div className="justify-center flex flex-col gap-2">
+                            <div className="justify-center mt-3 flex flex-col gap-2">
                                 <Label
                                     htmlFor="picture"
                                     className="text-center"
@@ -65,13 +64,13 @@ export default function ProfilePage() {
                         <div className="flex p-10 justify-center pr-20">
                             <div className="flex flex-col gap-6 justify-center">
                                 <div className="text-2xl mx-8 font-semibold text-center">
-                                    Profile information
+                                    <div className="flex flex-col gap-2">
+                                        <p>Profile information</p>
+                                        <hr />
+                                    </div>
                                 </div>
                                 <Form {...form}>
-                                    <form
-                                        onSubmit={form.handleSubmit(onSubmit)}
-                                        className="space-y-6"
-                                    >
+                                    <form className="space-y-6">
                                         <div className="flex flex-col gap-2">
                                             <FormField
                                                 control={form.control}
@@ -122,19 +121,26 @@ export default function ProfilePage() {
                                                 )}
                                             />
                                         </div>
-                                        <div className="flex flex-row gap-4">
-                                            <Button
-                                                variant="destructive"
-                                                className="w-full"
-                                            >
-                                                Change username
-                                            </Button>
-                                            <Button className="w-full">
-                                                Change password{" "}
-                                            </Button>
-                                        </div>
                                     </form>
                                 </Form>
+                                <hr />
+                                <div className="flex flex-row gap-4">
+                                    <Button
+                                        variant="outline"
+                                        className="w-full"
+                                    >
+                                        Change username
+                                    </Button>
+                                    <Button
+                                        className="w-full"
+                                        variant="outline"
+                                        disabled={
+                                            session.user.provider == "google"
+                                        }
+                                    >
+                                        Change password
+                                    </Button>
+                                </div>
                             </div>
                         </div>
                     </div>

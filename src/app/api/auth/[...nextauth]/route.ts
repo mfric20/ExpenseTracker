@@ -1,5 +1,5 @@
 import { and, eq } from "drizzle-orm";
-import NextAuth, { User } from "next-auth";
+import NextAuth, { Session, User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import { GoogleProfile } from "next-auth/providers/google";
@@ -96,8 +96,17 @@ export const authOptions = {
             return "/dashboard";
         },
         async jwt({ token, user }: { token: JWT; user: User }) {
-            if (user) token.picture = user.image;
+            if (user) {
+                token.picture = user.image;
+                token.provider = user.provider ?? "google";
+            }
             return token;
+        },
+        async session({ session, token }: { session: Session; token: JWT }) {
+            if (session.user) {
+                session.user.provider = token.provider;
+            }
+            return session;
         },
     },
 
