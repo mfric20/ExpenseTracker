@@ -16,6 +16,7 @@ import { Button } from "~/components/ui/button";
 
 import { useSession } from "next-auth/react";
 import { Label } from "~/components/ui/label";
+import { UploadButton } from "~/utils/uploadthing";
 
 const formSchema = z.object({
     email: z.string().min(2, {
@@ -37,16 +38,15 @@ export default function ProfilePage() {
         },
     });
 
-    console.log(session);
     return (
         <div>
             {session?.user ? (
                 <div className="flex flex-row justify-center md:py-32">
-                    <div className="drop-shadow-lg p-2 rounded-sm flex flex-col gap-8 md:justify-center md:flex-row ">
-                        <div className="flex p-10 flex-col gap-4 justify-center">
+                    <div className="drop-shadow-lg p-2 rounded-sm flex flex-col-reverse gap-16 md:justify-center md:flex-row">
+                        <div className="flex p-10 flex-col gap-4 justify-center md:w-1/2">
                             <img
                                 src={session.user?.image ?? ""}
-                                className="rounded-full w-3/4 m-auto flex"
+                                className="rounded-full w-full m-auto flex"
                             />
                             <div className="justify-center mt-3 flex flex-col gap-2">
                                 <Label
@@ -55,13 +55,11 @@ export default function ProfilePage() {
                                 >
                                     Change profile picture
                                 </Label>
-                                <div className="flex flex-row gap-2">
-                                    <Input id="picture" type="file" />
-                                    <Button>Upload</Button>
-                                </div>
+
+                                <UploadButton endpoint="imageUploader" />
                             </div>
                         </div>
-                        <div className="flex p-10 justify-center pr-20">
+                        <div className="flex mt-6 md:mt-0 md:p-10 justify-center md:pr-20 md:w-1/2">
                             <div className="flex flex-col gap-6 justify-center">
                                 <div className="text-2xl mx-8 font-semibold text-center">
                                     <div className="flex flex-col gap-2">
