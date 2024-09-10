@@ -8,6 +8,7 @@ import TopNav from "./topnav";
 interface ChildComponentProps {
     children: React.ReactNode;
 }
+
 export default function BodyComponent({ children }: ChildComponentProps) {
     const [toggleHamburgerMenu, setToggleHamburgerMenu] =
         useState<boolean>(false);
@@ -18,8 +19,13 @@ export default function BodyComponent({ children }: ChildComponentProps) {
                 <MobileNavBar setToggleHamburgerMenu={setToggleHamburgerMenu} />
             ) : (
                 <>
-                    <TopNav setToggleHamburgerMenu={setToggleHamburgerMenu} />
-                    <Providers>{children}</Providers>
+                    <Providers>
+                        <TopNav
+                            setToggleHamburgerMenu={setToggleHamburgerMenu}
+                        />
+
+                        {children}
+                    </Providers>
                 </>
             )}
         </div>

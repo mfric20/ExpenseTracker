@@ -3,24 +3,29 @@
 import { useRouter } from "next/navigation";
 import { ModeToggle } from "~/components/ui/modetoggle";
 import { signOut, useSession } from "next-auth/react";
+import { Tuser } from "~/types/types";
 import { Avatar, AvatarImage } from "~/components/ui/avatar";
 
-export default function PcNavBar() {
-    const { data: session } = useSession();
+interface ChildComponentProps {
+    userInfo: Tuser | undefined;
+}
+
+export default function PcNavBar({ userInfo }: ChildComponentProps) {
     const router = useRouter();
+    const { data: session } = useSession();
 
     return (
         <div className="flex flex-row gap-4">
             <ModeToggle />
-            {session && session.user ? (
+            {userInfo ? (
                 <div className="flex flex-row gap-4">
                     <div className="m-auto">
                         <Avatar>
                             <AvatarImage
                                 onClick={() => router.push(`/profile`)}
                                 className="hover:cursor-pointer"
-                                src={session.user.image || ""}
-                                alt={session.user.name || ""}
+                                src={userInfo.image ?? ""}
+                                alt={userInfo.name ?? ""}
                             />
                         </Avatar>
                     </div>
@@ -33,7 +38,7 @@ export default function PcNavBar() {
                         Sign Out
                     </div>
                 </div>
-            ) : (
+            ) : !session ? (
                 <div className="flex flex-row gap-3">
                     <div
                         onClick={() => {
@@ -52,6 +57,8 @@ export default function PcNavBar() {
                         Sign In
                     </div>
                 </div>
+            ) : (
+                <div></div>
             )}
         </div>
     );

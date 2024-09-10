@@ -17,6 +17,11 @@ import { Button } from "~/components/ui/button";
 import { useSession } from "next-auth/react";
 import { Label } from "~/components/ui/label";
 import { UploadButton } from "~/utils/uploadthing";
+import { Tuser } from "~/types/types";
+import { useState, useEffect } from "react";
+import { useMutation } from "@tanstack/react-query";
+
+import axios from "axios";
 
 const formSchema = z.object({
     email: z.string().min(2, {
@@ -28,7 +33,25 @@ const formSchema = z.object({
 });
 
 export default function ProfilePage() {
+    const [userInfo, setUserInfo] = useState<Tuser>();
     const { data: session } = useSession();
+
+    useEffect(() => {
+        getUserInfoMutation.mutate(session?.user.email as string);
+    }, [session]);
+
+    const getUserInfoMutation = useMutation({
+        mutationKey: ["getUserInfoMutation"],
+        mutationFn: async (userEmail: string) => {
+            const response = await axios.get(
+                `/api/user?userEmail=${userEmail}`,
+            );
+            return response.data;
+        },
+        onSuccess: (data, variables, context) => {
+            setUserInfo(data.userInfo);
+        },
+    });
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -45,8 +68,8 @@ export default function ProfilePage() {
                     <div className="drop-shadow-lg p-2 rounded-sm flex flex-col-reverse gap-16 md:justify-center md:flex-row">
                         <div className="flex p-10 flex-col gap-4 justify-center md:w-1/2">
                             <img
-                                src={session.user?.image ?? ""}
-                                className="rounded-full w-full m-auto flex"
+                                src={userInfo?.image ?? ""}
+                                className="rounded-full m-auto flex w-64 h-64"
                             />
                             <div className="justify-center mt-3 flex flex-col gap-2">
                                 <Label
@@ -56,7 +79,12 @@ export default function ProfilePage() {
                                     Change profile picture
                                 </Label>
 
-                                <UploadButton endpoint="imageUploader" />
+                                <UploadButton
+                                    endpoint="imageUploader"
+                                    onClientUploadComplete={() => {
+                                        window.location.reload();
+                                    }}
+                                />
                             </div>
                         </div>
                         <div className="flex mt-6 md:mt-0 md:p-10 justify-center md:pr-20 md:w-1/2">
