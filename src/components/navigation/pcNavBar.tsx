@@ -5,14 +5,32 @@ import { ModeToggle } from "~/components/ui/modetoggle";
 import { signOut, useSession } from "next-auth/react";
 import { Tuser } from "~/types/types";
 import { Avatar, AvatarImage } from "~/components/ui/avatar";
+import { useState, useEffect } from "react";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 
-interface ChildComponentProps {
-    userInfo: Tuser | undefined;
-}
-
-export default function PcNavBar({ userInfo }: ChildComponentProps) {
+export default function PcNavBar() {
     const router = useRouter();
     const { data: session } = useSession();
+
+    const [userInfo, setUserInfo] = useState<Tuser>();
+
+    useEffect(() => {
+        getUserInfoMutation.mutate(session?.user?.email as string);
+    }, [session]);
+
+    const getUserInfoMutation = useMutation({
+        mutationKey: ["getUserInfoMutation"],
+        mutationFn: async (userEmail: string) => {
+            const response = await axios.get(
+                `/api/user?userEmail=${userEmail}`,
+            );
+            return response.data;
+        },
+        onSuccess: (data, variables, context) => {
+            setUserInfo(data.userInfo);
+        },
+    });
 
     return (
         <div className="flex flex-row gap-4">

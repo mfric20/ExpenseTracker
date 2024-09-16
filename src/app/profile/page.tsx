@@ -69,7 +69,7 @@ export default function ProfilePage() {
                         <div className="flex p-10 flex-col gap-4 justify-center md:w-1/2">
                             <img
                                 src={userInfo?.image ?? ""}
-                                className="rounded-full m-auto flex w-64 h-64"
+                                className="rounded-full m-auto flex w-64 h-72"
                             />
                             <div className="justify-center mt-3 flex flex-col gap-2">
                                 <Label

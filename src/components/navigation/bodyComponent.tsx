@@ -15,19 +15,21 @@ export default function BodyComponent({ children }: ChildComponentProps) {
 
     return (
         <div>
-            {toggleHamburgerMenu ? (
-                <MobileNavBar setToggleHamburgerMenu={setToggleHamburgerMenu} />
-            ) : (
-                <>
-                    <Providers>
+            <Providers>
+                {toggleHamburgerMenu ? (
+                    <MobileNavBar
+                        setToggleHamburgerMenu={setToggleHamburgerMenu}
+                    />
+                ) : (
+                    <>
                         <TopNav
                             setToggleHamburgerMenu={setToggleHamburgerMenu}
                         />
 
                         {children}
-                    </Providers>
-                </>
-            )}
+                    </>
+                )}
+            </Providers>
         </div>
     );
 }

@@ -34,23 +34,6 @@ export default function TopNav({
         return () => window.removeEventListener("resize", updateWidth);
     }, []);
 
-    useEffect(() => {
-        getUserInfoMutation.mutate(session?.user.email as string);
-    }, [session]);
-
-    const getUserInfoMutation = useMutation({
-        mutationKey: ["getUserInfoMutation"],
-        mutationFn: async (userEmail: string) => {
-            const response = await axios.get(
-                `/api/user?userEmail=${userEmail}`,
-            );
-            return response.data;
-        },
-        onSuccess: (data, variables, context) => {
-            setUserInfo(data.userInfo);
-        },
-    });
-
     return (
         <div>
             <nav className="flex flex-row justify-between border-b border-secondary p-4 text-xl font-bold md:px-36">
@@ -95,7 +78,7 @@ export default function TopNav({
                         />
                     </div>
                 ) : (
-                    <PcNavBar userInfo={userInfo} />
+                    <PcNavBar />
                 )}
             </nav>
         </div>
