@@ -52,14 +52,14 @@ export default function MobileNavBar({
                 <ModeToggle />
                 {userInfo ? (
                     <div className="flex flex-col gap-4">
-                        <div className="m-auto">
+                        <div className="m-auto w-12 h-12 overflow-hidden">
                             <Avatar className="w-12 h-auto">
                                 <AvatarImage
                                     onClick={() => {
                                         router.push(`/profile`);
                                         setToggleHamburgerMenu(false);
                                     }}
-                                    className="hover:cursor-pointer"
+                                    className="hover:cursor-pointer w-full h-full object-center object-cover"
                                     src={userInfo.image ?? ""}
                                     alt={userInfo.name ?? ""}
                                 />

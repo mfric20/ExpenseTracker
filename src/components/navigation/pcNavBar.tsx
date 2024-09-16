@@ -37,11 +37,11 @@ export default function PcNavBar() {
             <ModeToggle />
             {userInfo ? (
                 <div className="flex flex-row gap-4">
-                    <div className="m-auto">
+                    <div className="m-auto w-8 h-8 overflow-hidden">
                         <Avatar>
                             <AvatarImage
                                 onClick={() => router.push(`/profile`)}
-                                className="hover:cursor-pointer"
+                                className="hover:cursor-pointer w-full h-full object-center object-cover"
                                 src={userInfo.image ?? ""}
                                 alt={userInfo.name ?? ""}
                             />
