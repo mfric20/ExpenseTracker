@@ -50,7 +50,9 @@ export default function MobileNavBar({
             </div>
             <div className="flex flex-col gap-6 justify-center items-center">
                 <ModeToggle />
-                {userInfo ? (
+                {getUserInfoMutation.isPending ? (
+                    <></>
+                ) : userInfo ? (
                     <div className="flex flex-col gap-4">
                         <div className="m-auto w-12 h-12 overflow-hidden">
                             <Avatar className="w-12 h-auto">
@@ -96,6 +98,7 @@ export default function MobileNavBar({
                         </div>
                     </div>
                 )}
+                {}
             </div>
         </div>
     );
