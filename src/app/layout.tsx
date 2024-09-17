@@ -1,38 +1,40 @@
 import "~/styles/globals.css";
+import "@uploadthing/react/styles.css";
+
 import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
-import TopNav from "~/components/navigation/topnav";
 import { ThemeProvider } from "~/components/ui/theme-provider";
 import { getServerSession } from "next-auth";
 import SessionProvider from "~/components/auth/sessionProvider";
-import Providers from "./providers";
+import BodyComponent from "~/components/navigation/bodyComponent";
 
 export const metadata: Metadata = {
-  title: "Expense tracker",
-  description: "Expense tracker",
-  icons: [{ rel: "icon", url: "/favicon.ico" }],
+    title: "Expense tracker",
+    description: "Expense tracker",
+    icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
 export default async function RootLayout({
-  children,
+    children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const session = await getServerSession();
+    const session = await getServerSession();
 
-  return (
-    <html lang="en" suppressHydrationWarning>
-      <SessionProvider session={session}>
-        <body className={`${GeistSans.variable} flex flex-col gap-4 font-sans`}>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <TopNav />
-            <Providers>{children}</Providers>
-          </ThemeProvider>
-        </body>
-      </SessionProvider>
-    </html>
-  );
+    return (
+        <html lang="en" suppressHydrationWarning>
+            <SessionProvider session={session}>
+                <body
+                    className={`${GeistSans.variable} flex flex-col gap-4 font-sans`}
+                >
+                    <ThemeProvider
+                        attribute="class"
+                        defaultTheme="system"
+                        enableSystem
+                        disableTransitionOnChange
+                    >
+                        <BodyComponent children={children} />
+                    </ThemeProvider>
+                </body>
+            </SessionProvider>
+        </html>
+    );
 }
