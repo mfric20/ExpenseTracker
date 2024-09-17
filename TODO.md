@@ -14,8 +14,8 @@
 -   [x] Build top nav breadcrumb
 -   [x] Add hamburger menu on mobile view
 -   [x] Make humburger menu functional
--   [ ] Create image uploading
--   [ ] Create/Edit/Delete profile
+-   [x] Create image uploading
+-   [x] Create/Edit/Delete profile
 -   [ ] Fill database with mock data
 -   [ ] Load data to front-end
 -   [ ] Error management

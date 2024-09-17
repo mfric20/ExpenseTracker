@@ -91,8 +91,8 @@ export default function LoginPage() {
     }
 
     return (
-        <div className="flex justify-center pt-32">
-            <div className="m-6 flex w-full flex-col gap-8 rounded-sm border-2 p-10 md:m-0 md:w-1/5">
+        <div className="flex justify-center pt-32 px-">
+            <div className="m-6 flex w-full flex-col gap-8 rounded-sm border-2 p-10 md:m-0 md:w-96">
                 <div className="flex justify-center text-3xl font-semibold">
                     <span className="text-blue-600">Expense</span>Tracker
                 </div>

@@ -3,6 +3,9 @@
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useSession } from "next-auth/react";
+import { useState, useEffect } from "react";
+
 import {
     Form,
     FormControl,
@@ -12,13 +15,11 @@ import {
     FormMessage,
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
-import { Button } from "~/components/ui/button";
-
-import { useSession } from "next-auth/react";
 import { Label } from "~/components/ui/label";
+import EditComponent from "~/components/basic/editComponent";
+
 import { UploadButton } from "~/utils/uploadthing";
 import { Tuser } from "~/types/types";
-import { useState, useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
 
 import axios from "axios";
@@ -112,9 +113,7 @@ export default function ProfilePage() {
                                                             <Input
                                                                 disabled
                                                                 placeholder={
-                                                                    session
-                                                                        ?.user
-                                                                        ?.name ??
+                                                                    userInfo?.name ??
                                                                     ""
                                                                 }
                                                                 {...field}
@@ -136,9 +135,7 @@ export default function ProfilePage() {
                                                             <Input
                                                                 disabled
                                                                 placeholder={
-                                                                    session
-                                                                        ?.user
-                                                                        ?.email ??
+                                                                    userInfo?.email ??
                                                                     ""
                                                                 }
                                                                 {...field}
@@ -152,23 +149,11 @@ export default function ProfilePage() {
                                     </form>
                                 </Form>
                                 <hr />
-                                <div className="flex flex-row gap-4">
-                                    <Button
-                                        variant="outline"
-                                        className="w-full"
-                                    >
-                                        Change username
-                                    </Button>
-                                    <Button
-                                        className="w-full"
-                                        variant="outline"
-                                        disabled={
-                                            session.user.provider == "google"
-                                        }
-                                    >
-                                        Change password
-                                    </Button>
-                                </div>
+                                {userInfo ? (
+                                    <EditComponent userInfo={userInfo} />
+                                ) : (
+                                    <></>
+                                )}
                             </div>
                         </div>
                     </div>
