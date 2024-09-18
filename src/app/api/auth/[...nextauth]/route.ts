@@ -64,9 +64,11 @@ export const authOptions = {
                     .from(users)
                     .where(eq(users.email, googleProfile.email));
 
+                const userId = uuidv4();
+
                 if (query.length === 0) {
                     await db.insert(users).values({
-                        id: uuidv4(),
+                        id: userId,
                         email: googleProfile.email,
                         emailVerified: googleProfile.email_verified,
                         provider: "google",
@@ -81,8 +83,16 @@ export const authOptions = {
                     if (user?.provider != "google")
                         throw new Error("emailError");
                 }
-                return true;
+
+                return {
+                    id: userId,
+                    email: googleProfile.email,
+                    name: googleProfile.name,
+                    provider: "google",
+                    image: googleProfile.picture,
+                };
             } else if (signInInfo.account.provider === "credentials") {
+                return signInInfo.user;
             }
             return true;
         },
@@ -99,12 +109,14 @@ export const authOptions = {
             if (user) {
                 token.picture = user.image;
                 token.provider = user.provider ?? "google";
+                token.id = user.id;
             }
             return token;
         },
         async session({ session, token }: { session: Session; token: JWT }) {
             if (session.user) {
                 session.user.provider = token.provider;
+                session.user.id = token.id;
             }
             return session;
         },
