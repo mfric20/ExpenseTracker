@@ -88,3 +88,28 @@ export async function POST(req: Request) {
         status: 500,
     });
 }
+
+export async function DELETE(req: Request) {
+    try {
+        const url = new URL(req.url);
+
+        const userEmail = url.searchParams.get("userEmail");
+
+        const updateResult = await db
+            .delete(users)
+            .where(eq(users.email, userEmail as string));
+
+        if (updateResult.rowCount && updateResult?.rowCount > 0)
+            return new Response(JSON.stringify({ status: "success" }));
+
+        return new Response(
+            JSON.stringify({ error: "Error deleting profile!" }),
+            {
+                status: 400,
+                statusText: "Error deleting profile!",
+            },
+        );
+    } catch (error) {
+        console.log("Error on DELETE /user", error);
+    }
+}

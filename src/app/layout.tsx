@@ -5,6 +5,7 @@ import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
 import { ThemeProvider } from "~/components/ui/theme-provider";
 import { getServerSession } from "next-auth";
+import { Toaster } from "~/components/ui/toaster";
 import SessionProvider from "~/components/auth/sessionProvider";
 import BodyComponent from "~/components/navigation/bodyComponent";
 
@@ -32,6 +33,7 @@ export default async function RootLayout({
                         disableTransitionOnChange
                     >
                         <BodyComponent children={children} />
+                        <Toaster />
                     </ThemeProvider>
                 </body>
             </SessionProvider>
