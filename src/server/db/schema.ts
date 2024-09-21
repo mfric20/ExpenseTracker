@@ -9,7 +9,7 @@ import {
 export const createTable = pgTableCreator((name) => `ExpenseTracker_${name}`);
 
 export const users = createTable("users", {
-    id: uuid("id").primaryKey(),
+    id: uuid("id").primaryKey().unique(),
     name: varchar("name", { length: 256 }),
     email: varchar("email", { length: 256 }).unique(),
     emailVerified: boolean("emailVerified"),
@@ -17,4 +17,11 @@ export const users = createTable("users", {
     password: varchar("password", { length: 256 }),
     image: varchar("image"),
     verificationCode: integer("verificationCode"),
+});
+
+export const expenseProfiles = createTable("expsenseProfiles", {
+    id: uuid("id").primaryKey().unique(),
+    name: varchar("name", { length: 256 }),
+    color: varchar("color"),
+    userId: uuid("userId").references(() => users.id),
 });
