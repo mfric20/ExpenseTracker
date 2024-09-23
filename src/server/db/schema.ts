@@ -23,5 +23,7 @@ export const expenseProfiles = createTable("expsenseProfiles", {
     id: uuid("id").primaryKey().unique(),
     name: varchar("name", { length: 256 }),
     color: varchar("color"),
-    userId: uuid("userId").references(() => users.id),
+    userId: uuid("userId")
+        .references(() => users.id, { onDelete: "cascade" })
+        .notNull(),
 });

@@ -1,49 +1,34 @@
-"use client";
-
 import { useRouter } from "next/navigation";
 import { ModeToggle } from "~/components/ui/modetoggle";
 import { signOut, useSession } from "next-auth/react";
 import { Tuser } from "~/types/types";
 import { Avatar, AvatarImage } from "~/components/ui/avatar";
-import { useState, useEffect } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
 export default function PcNavBar() {
     const router = useRouter();
-    const { data: session } = useSession();
 
-    const [userInfo, setUserInfo] = useState<Tuser>();
-
-    useEffect(() => {
-        getUserInfoMutation.mutate(session?.user?.email as string);
-    }, [session]);
-
-    const getUserInfoMutation = useMutation({
-        mutationKey: ["getUserInfoMutation"],
-        mutationFn: async (userEmail: string) => {
-            const response = await axios.get(
-                `/api/user?userEmail=${userEmail}`,
-            );
-            return response.data;
-        },
-        onSuccess: (data, variables, context) => {
-            setUserInfo(data.userInfo);
+    const userInfoQuery = useQuery<Tuser>({
+        queryKey: ["getUserInfo"],
+        queryFn: async () => {
+            const response = await axios.get(`/api/user`);
+            return response.data.userInfo;
         },
     });
 
     return (
         <div className="flex flex-row gap-4">
             <ModeToggle />
-            {userInfo ? (
+            {userInfoQuery.isSuccess ? (
                 <div className="flex flex-row gap-4">
                     <div className="m-auto w-8 h-8 overflow-hidden">
                         <Avatar>
                             <AvatarImage
                                 onClick={() => router.push(`/profile`)}
                                 className="hover:cursor-pointer w-full h-full object-center object-cover"
-                                src={userInfo.image ?? ""}
-                                alt={userInfo.name ?? ""}
+                                src={userInfoQuery.data?.image ?? ""}
+                                alt={userInfoQuery.data?.name ?? ""}
                             />
                         </Avatar>
                     </div>
@@ -56,7 +41,9 @@ export default function PcNavBar() {
                         Sign Out
                     </div>
                 </div>
-            ) : !session ? (
+            ) : userInfoQuery.isLoading ? (
+                <div></div>
+            ) : (
                 <div className="flex flex-row gap-3">
                     <div
                         onClick={() => {
@@ -75,8 +62,6 @@ export default function PcNavBar() {
                         Sign In
                     </div>
                 </div>
-            ) : (
-                <div></div>
             )}
         </div>
     );

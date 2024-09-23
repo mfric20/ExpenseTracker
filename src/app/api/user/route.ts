@@ -1,18 +1,20 @@
+export const dynamic = "force-dynamic";
+
 import { eq } from "drizzle-orm";
 import { db } from "~/server/db";
 import { users } from "~/server/db/schema";
+import { getServerSession } from "next-auth";
+import { authOptions } from "~/app/api/auth/[...nextauth]/route";
 import bcrypt from "bcrypt";
 
-export async function GET(req: Request) {
+export async function GET() {
     try {
-        const url = new URL(req.url);
-
-        const userEmail = url.searchParams.get("userEmail");
+        const session = await getServerSession(authOptions);
 
         const userInfo = await db
             .select()
             .from(users)
-            .where(eq(users.email, userEmail as string));
+            .where(eq(users.email, session?.user.email as string));
 
         return new Response(JSON.stringify({ userInfo: userInfo[0] }));
     } catch (error) {

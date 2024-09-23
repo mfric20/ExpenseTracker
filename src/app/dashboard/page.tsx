@@ -1,12 +1,14 @@
 "use client";
 
-import { Button } from "~/components/ui/button";
-import { FolderPlusIcon } from "@heroicons/react/24/solid";
+import { PlusCircleIcon } from "@heroicons/react/24/solid";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 
 import axios from "axios";
 
 export default function DashboardPage() {
+    const [screenWidth, setScreenWidth] = useState(0);
+
     const expenseProfilesQuery = useQuery({
         queryKey: ["getExpenseProfiles"],
         queryFn: async () => {
@@ -15,20 +17,27 @@ export default function DashboardPage() {
         },
     });
 
-    console.log(expenseProfilesQuery.data);
+    useEffect(() => {
+        const updateWidth = () => {
+            setScreenWidth(window.innerWidth);
+        };
+
+        updateWidth();
+        window.addEventListener("resize", updateWidth);
+
+        return () => window.removeEventListener("resize", updateWidth);
+    }, []);
 
     return (
-        <div className="flex flex-col gap-6 px-36 py-8 drop-shadow-md">
-            <div className="flex flex-row">
-                <div className="ml-auto text-4xl font-semibold ">
+        <div>
+            <div className="flex flex-col gap-6 px-10 md:px-36 py-8 drop-shadow-md">
+                <div className="mx-auto text-2xl md:text-4xl font-semibold">
                     <span className="text-blue-600">Expense</span> profiles
                 </div>
-                <Button className="ml-auto flex flex-row gap-2 justify-end">
-                    <div className="flex m-auto">Create new</div>{" "}
-                    <FolderPlusIcon className="w-5 mb-[2px]" />
-                </Button>
+
+                <hr />
             </div>
-            <hr />
+            <PlusCircleIcon className="w-14 fixed md:bottom-20 md:right-20 bottom-12 right-12 text-button drop-shadow-md hover:text-button/90 hover:cursor-pointer" />
         </div>
     );
 }

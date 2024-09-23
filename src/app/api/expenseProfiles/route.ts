@@ -1,10 +1,12 @@
+export const dynamic = "force-dynamic";
+
 import { eq } from "drizzle-orm";
 import { db } from "~/server/db";
 import { expenseProfiles, users } from "~/server/db/schema";
 import { getServerSession } from "next-auth";
 import { authOptions } from "~/app/api/auth/[...nextauth]/route";
 
-export async function GET(req: Request) {
+export async function GET() {
     try {
         const session = await getServerSession(authOptions);
 
