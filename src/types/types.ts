@@ -1,4 +1,4 @@
-import { users } from "~/server/db/schema";
+import { expenseProfiles, users } from "~/server/db/schema";
 
 export type TError = {
     code: string;
@@ -15,3 +15,4 @@ export type credentialsProfile = {
 };
 
 export type Tuser = typeof users.$inferSelect;
+export type TExpenseProfile = typeof expenseProfiles.$inferSelect;

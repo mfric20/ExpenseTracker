@@ -2,31 +2,19 @@
 
 import { PlusCircleIcon } from "@heroicons/react/24/solid";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
 
 import axios from "axios";
+import ExpenseProfileCard from "~/components/cards/expenseProfileCard";
+import { TExpenseProfile } from "~/types/types";
 
 export default function DashboardPage() {
-    const [screenWidth, setScreenWidth] = useState(0);
-
-    const expenseProfilesQuery = useQuery({
+    const expenseProfilesQuery = useQuery<TExpenseProfile[]>({
         queryKey: ["getExpenseProfiles"],
         queryFn: async () => {
             const response = await axios.get(`/api/expenseProfiles`);
-            return response.data;
+            return response.data.expenseProfiles;
         },
     });
-
-    useEffect(() => {
-        const updateWidth = () => {
-            setScreenWidth(window.innerWidth);
-        };
-
-        updateWidth();
-        window.addEventListener("resize", updateWidth);
-
-        return () => window.removeEventListener("resize", updateWidth);
-    }, []);
 
     return (
         <div>
@@ -34,10 +22,33 @@ export default function DashboardPage() {
                 <div className="mx-auto text-2xl md:text-4xl font-semibold">
                     <span className="text-blue-600">Expense</span> profiles
                 </div>
-
                 <hr />
+                {expenseProfilesQuery.isLoading ? (
+                    <div className="flex justify-center text-lg mt-32 italic text-primary/70">
+                        Loading...
+                    </div>
+                ) : expenseProfilesQuery.isSuccess ? (
+                    <div className="flex flex-row gap-8 h-36">
+                        {expenseProfilesQuery.data.map((expenseProfile) => (
+                            <div
+                                key={
+                                    "expenseProfile" +
+                                    expenseProfilesQuery.data.indexOf(
+                                        expenseProfile,
+                                    )
+                                }
+                            >
+                                <ExpenseProfileCard
+                                    expenseProfile={expenseProfile}
+                                />
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <div></div>
+                )}
             </div>
-            <PlusCircleIcon className="w-14 fixed md:bottom-20 md:right-20 bottom-12 right-12 text-button drop-shadow-md hover:text-button/90 hover:cursor-pointer" />
+            <PlusCircleIcon className="w-14 fixed md:bottom-20 md:right-36 bottom-12 right-12 text-button drop-shadow-md hover:text-button/90 hover:cursor-pointer" />
         </div>
     );
 }
