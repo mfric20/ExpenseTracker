@@ -29,7 +29,7 @@ export default function ExpenseProfileCard({
                 </div>
             </div>
             <div className="flex -mr-5">
-                <TrashIcon className="w-8 my-auto bg-red-600 p-1 rounded-md -translate-x-4 hover:cursor-pointer hover:bg-red-600/80 transition-colors duration-300" />
+                <TrashIcon className="w-8 my-auto text-white bg-red-600 p-1 rounded-md -translate-x-4 hover:cursor-pointer hover:bg-red-600/80 transition-colors duration-300" />
             </div>
         </div>
     );

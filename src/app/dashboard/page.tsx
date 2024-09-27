@@ -7,6 +7,8 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import ExpenseProfileCard from "~/components/cards/expenseProfileCard";
 import { TExpenseProfile } from "~/types/types";
+import { Dialog, DialogTrigger } from "~/components/ui/dialog";
+import CreateExpenseProfileComponent from "~/components/basic/createExpenseProfileComponent";
 
 export default function DashboardPage() {
     const [screenWidth, setScreenWidth] = useState(0);
@@ -84,7 +86,12 @@ export default function DashboardPage() {
                 )}
             </div>
 
-            <PlusCircleIcon className="w-14 fixed md:bottom-20 md:right-36 bottom-12 right-12 text-button drop-shadow-md hover:text-button/90 hover:cursor-pointer" />
+            <Dialog>
+                <DialogTrigger asChild>
+                    <PlusCircleIcon className="w-14 fixed md:bottom-20 md:right-36 bottom-12 right-12 text-button drop-shadow-md hover:text-button/90 hover:cursor-pointer" />
+                </DialogTrigger>
+                <CreateExpenseProfileComponent />
+            </Dialog>
         </>
     );
 }
