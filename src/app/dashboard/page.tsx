@@ -68,6 +68,9 @@ export default function DashboardPage() {
                                         return (
                                             <ExpenseProfileCard
                                                 expenseProfile={expenseProfile}
+                                                expenseProfileQuery={
+                                                    expenseProfilesQuery
+                                                }
                                                 key={
                                                     "expenseProfile" +
                                                     expenseProfilesQuery.data.indexOf(

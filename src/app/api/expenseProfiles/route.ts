@@ -66,3 +66,19 @@ export async function POST(req: Request) {
         console.log("Error on GET /expenseProfiles", error);
     }
 }
+
+export async function DELETE(req: Request) {
+    try {
+        const url = new URL(req.url);
+
+        const expenseProfileId = url.searchParams.get("expenseProfileId");
+
+        const exponseProfilesResponse = await db
+            .delete(expenseProfiles)
+            .where(eq(expenseProfiles.id, expenseProfileId ?? ""));
+
+        return new Response(JSON.stringify({ status: "successful" }));
+    } catch (error) {
+        console.log("Error on DELETE /expenseProfiles", error);
+    }
+}

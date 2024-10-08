@@ -85,7 +85,7 @@ export default function CreateExpenseProfileComponent() {
                                             </FormLabel>
                                             <FormControl className="col-span-3">
                                                 <Input
-                                                    placeholder="Your name..."
+                                                    placeholder="Name of the profile..."
                                                     {...field}
                                                 />
                                             </FormControl>
