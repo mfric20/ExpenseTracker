@@ -2,9 +2,6 @@ import { useRouter, usePathname } from "next/navigation";
 import { Bars3Icon } from "@heroicons/react/24/outline";
 import { useSession } from "next-auth/react";
 import { useState, useEffect } from "react";
-import { Tuser } from "~/types/types";
-import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
 import PcNavBar from "./pcNavBar";
 
 interface ChildComponentProps {
@@ -15,7 +12,6 @@ export default function TopNav({
     setToggleHamburgerMenu,
 }: ChildComponentProps) {
     const [screenWidth, setScreenWidth] = useState(0);
-    const [userInfo, setUserInfo] = useState<Tuser>();
 
     const { data: session } = useSession();
     const router = useRouter();

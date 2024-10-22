@@ -1,18 +1,20 @@
+export const dynamic = "force-dynamic";
+
 import { eq } from "drizzle-orm";
 import { db } from "~/server/db";
 import { users } from "~/server/db/schema";
+import { getServerSession } from "next-auth";
+import { authOptions } from "~/app/api/auth/[...nextauth]/route";
 import bcrypt from "bcrypt";
 
-export async function GET(req: Request) {
+export async function GET() {
     try {
-        const url = new URL(req.url);
-
-        const userEmail = url.searchParams.get("userEmail");
+        const session = await getServerSession(authOptions);
 
         const userInfo = await db
             .select()
             .from(users)
-            .where(eq(users.email, userEmail as string));
+            .where(eq(users.email, session?.user.email as string));
 
         return new Response(JSON.stringify({ userInfo: userInfo[0] }));
     } catch (error) {
@@ -87,4 +89,29 @@ export async function POST(req: Request) {
     return new Response(JSON.stringify({ error: "Something went wrong!" }), {
         status: 500,
     });
+}
+
+export async function DELETE(req: Request) {
+    try {
+        const url = new URL(req.url);
+
+        const userEmail = url.searchParams.get("userEmail");
+
+        const updateResult = await db
+            .delete(users)
+            .where(eq(users.email, userEmail as string));
+
+        if (updateResult.rowCount && updateResult?.rowCount > 0)
+            return new Response(JSON.stringify({ status: "success" }));
+
+        return new Response(
+            JSON.stringify({ error: "Error deleting profile!" }),
+            {
+                status: 400,
+                statusText: "Error deleting profile!",
+            },
+        );
+    } catch (error) {
+        console.log("Error on DELETE /user", error);
+    }
 }

@@ -74,7 +74,7 @@ export default function RegisterPage() {
 
     return (
         <div className="flex justify-center pt-32">
-            <div className="m-6 flex w-full flex-col gap-8 rounded-sm border-2 p-10 md:m-0 md:w-96">
+            <div className="m-6 flex w-full flex-col gap-8 rounded-sm border-2 p-10 md:m-0 md:w-96 drop-shadow-lg ">
                 <div className="flex justify-center text-3xl font-semibold">
                     <span className="text-blue-600">Expense</span>Tracker
                 </div>

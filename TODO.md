@@ -16,8 +16,8 @@
 -   [x] Make humburger menu functional
 -   [x] Create image uploading
 -   [x] Create/Edit/Delete profile
--   [ ] Fill database with mock data
--   [ ] Load data to front-end
+-   [ ] Navigation system and dashboard
+-   [ ] Balance profiles feature
+-   [ ] Add balance management features
+-   [ ] Add graphs
 -   [ ] Error management
--   [ ] Add balance feature
--   [ ] Add expenses feature

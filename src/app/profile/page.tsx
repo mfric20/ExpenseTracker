@@ -3,9 +3,21 @@
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { useState, useEffect } from "react";
+import { useToast } from "~/components/hooks/use-toast";
 
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "~/components/ui/alert-dialog";
 import {
     Form,
     FormControl,
@@ -23,6 +35,7 @@ import { Tuser } from "~/types/types";
 import { useMutation } from "@tanstack/react-query";
 
 import axios from "axios";
+import { Button } from "~/components/ui/button";
 
 const formSchema = z.object({
     email: z.string().min(2, {
@@ -36,6 +49,8 @@ const formSchema = z.object({
 export default function ProfilePage() {
     const [userInfo, setUserInfo] = useState<Tuser>();
     const { data: session } = useSession();
+
+    const { toast } = useToast();
 
     useEffect(() => {
         getUserInfoMutation.mutate(session?.user.email as string);
@@ -54,6 +69,26 @@ export default function ProfilePage() {
         },
     });
 
+    const deleteProfileMutation = useMutation({
+        mutationKey: ["deleteProfileMutation"],
+        mutationFn: async (userEmail: string) => {
+            const response = await axios.delete(
+                `/api/user?userEmail=${userEmail}`,
+            );
+            return response.data;
+        },
+        onSuccess: (data, variables, context) => {
+            signOut();
+        },
+        onError: (error) => {
+            console.log("Error deleting profile: ", error);
+            toast({
+                title: "Error!",
+                description: "Error deleting your profile!",
+            });
+        },
+    });
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -61,6 +96,13 @@ export default function ProfilePage() {
             name: "",
         },
     });
+
+    const deleteProfile = async () => {
+        const userEmail = session?.user.email;
+        if (userEmail) {
+            deleteProfileMutation.mutate(userEmail);
+        }
+    };
 
     return (
         <div>
@@ -150,7 +192,42 @@ export default function ProfilePage() {
                                 </Form>
                                 <hr />
                                 {userInfo ? (
-                                    <EditComponent userInfo={userInfo} />
+                                    <div className="flex flex-col gap-4">
+                                        <EditComponent userInfo={userInfo} />
+                                        <AlertDialog>
+                                            <AlertDialogTrigger asChild>
+                                                <Button variant="destructive">
+                                                    Delete profile
+                                                </Button>
+                                            </AlertDialogTrigger>
+                                            <AlertDialogContent>
+                                                <AlertDialogHeader>
+                                                    <AlertDialogTitle>
+                                                        Are you absolutely sure?
+                                                    </AlertDialogTitle>
+                                                    <AlertDialogDescription>
+                                                        This action cannot be
+                                                        undone. This will
+                                                        permanently delete your
+                                                        account and remove your
+                                                        data from our servers.
+                                                    </AlertDialogDescription>
+                                                </AlertDialogHeader>
+                                                <AlertDialogFooter className="flex flex-row">
+                                                    <AlertDialogCancel>
+                                                        Cancel
+                                                    </AlertDialogCancel>
+                                                    <AlertDialogAction
+                                                        onClick={() =>
+                                                            deleteProfile()
+                                                        }
+                                                    >
+                                                        Continue
+                                                    </AlertDialogAction>
+                                                </AlertDialogFooter>
+                                            </AlertDialogContent>
+                                        </AlertDialog>
+                                    </div>
                                 ) : (
                                     <></>
                                 )}
