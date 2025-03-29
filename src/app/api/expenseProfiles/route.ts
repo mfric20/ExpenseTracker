@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import { v4 as uuidv4 } from "uuid";
-import { eq } from "drizzle-orm";
+import { asc, desc, eq } from "drizzle-orm";
 import { db } from "~/server/db";
 import { expenseProfiles, users } from "~/server/db/schema";
 import { getServerSession } from "next-auth";
@@ -21,7 +21,8 @@ export async function GET() {
             const exponseProfilesResponse = await db
                 .select()
                 .from(expenseProfiles)
-                .where(eq(expenseProfiles.userId, user?.id));
+                .where(eq(expenseProfiles.userId, user?.id)).orderBy(
+                    desc(expenseProfiles.favorite), asc(expenseProfiles.name));
 
             return new Response(
                 JSON.stringify({ expenseProfiles: exponseProfilesResponse }),
