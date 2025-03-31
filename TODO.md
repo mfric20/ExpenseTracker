@@ -20,4 +20,4 @@
 -   [ ] Balance profiles feature
 -   [ ] Add balance management features
 -   [ ] Add graphs
--   [ ] Error management
+-   [ ] Add AI features

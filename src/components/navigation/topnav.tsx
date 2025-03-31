@@ -32,7 +32,7 @@ export default function TopNav({
 
     return (
         <div>
-            <nav className="flex flex-row justify-between border-b border-secondary p-4 text-xl font-bold md:px-36">
+            <nav className="flex flex-row justify-between border-b border-secondary p-4 text-xl font-bold md:px-44">
                 <div className="my-auto select-none">
                     <div className="flex flex-row gap-4">
                         <div

@@ -4,6 +4,7 @@ import { useState } from "react";
 import Providers from "~/app/providers";
 import MobileNavBar from "./mobileNavBar";
 import TopNav from "./topnav";
+import SideNavBar from "./sideNavBar";
 
 interface ChildComponentProps {
     children: React.ReactNode;
@@ -25,8 +26,10 @@ export default function BodyComponent({ children }: ChildComponentProps) {
                         <TopNav
                             setToggleHamburgerMenu={setToggleHamburgerMenu}
                         />
-
-                        {children}
+                        <div className="flex flex-row gap-0 md:gap-0">
+                            <SideNavBar />
+                            {children}
+                        </div>
                     </>
                 )}
             </Providers>

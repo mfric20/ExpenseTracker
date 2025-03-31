@@ -59,7 +59,14 @@ export async function POST(req: Request) {
                     color: values.color,
                     name: values.name,
                     favorite: false,
-                });
+                }).returning();
+
+            if(exponseProfilesResponse.length == 0) {
+                return new Response(
+                    JSON.stringify({ error: "Error creating expense profile" }),
+                    { status: 500 },
+                );
+            }
 
             return new Response(JSON.stringify({ success: "True" }));
         }
@@ -76,7 +83,14 @@ export async function DELETE(req: Request) {
 
         const exponseProfilesResponse = await db
             .delete(expenseProfiles)
-            .where(eq(expenseProfiles.id, expenseProfileId ?? ""));
+            .where(eq(expenseProfiles.id, expenseProfileId ?? "")).returning();
+
+        if (exponseProfilesResponse.length == 0) {
+            return new Response(
+                JSON.stringify({ error: "Error deleting expense profile" }),
+                { status: 500 },
+            );
+        }
 
         return new Response(JSON.stringify({ status: "successful" }));
     } catch (error) {

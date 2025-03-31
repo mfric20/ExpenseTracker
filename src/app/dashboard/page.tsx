@@ -34,7 +34,7 @@ export default function DashboardPage() {
 
     return (
         <>
-            <div className="flex flex-col gap-6 px-10 md:px-36 py-8 drop-shadow-md">
+            <div className="flex flex-col gap-6 px-10 md:px-36 py-8 drop-shadow-md w-full">
                 <div className="mx-auto text-2xl md:text-4xl font-semibold">
                     <span className="text-blue-600">Expense</span> profiles
                 </div>

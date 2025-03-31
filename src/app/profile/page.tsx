@@ -105,7 +105,7 @@ export default function ProfilePage() {
     };
 
     return (
-        <div>
+        <div className="w-full">
             {session?.user ? (
                 <div className="flex flex-row justify-center md:py-32">
                     <div className="drop-shadow-lg p-2 rounded-sm flex flex-col-reverse gap-16 md:justify-center md:flex-row">
