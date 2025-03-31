@@ -7,7 +7,7 @@ export default function SideNavBar() {
     const paths = path?.split("/").filter((path) => path != "");
 
     return (
-        <div className="min-w-[180px] gap-4 pt-5 pl-4 pr-2 text-xl font-normal  flex flex-col top-0 min-h-full border-r-[1px] border-secondary border-r-opacity-50">
+        <div className="min-w-[180px] gap-4 pt-8 pl-4 pr-2 text-xl font-normal  flex flex-col top-0 min-h-full border-r-[1px] border-secondary">
             {paths?.find((path) => path == "dashboard") ? (
                 <div className="flex text-blue-500 flex-row gap-2 text-center items-center hover:cursor-pointer">
                     <BookOpenIcon className="h-6 w-6" />

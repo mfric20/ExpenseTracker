@@ -21,10 +21,10 @@ export default async function RootLayout({
     const session = await getServerSession();
 
     return (
-        <html lang="en" suppressHydrationWarning>
+        <html lang="en" suppressHydrationWarning className="min-h-screen">
             <SessionProvider session={session}>
                 <body
-                    className={`${GeistSans.variable} flex flex-col gap-4 font-sans`}
+                    className={`${GeistSans.variable} flex flex-col gap-4 font-sans mih-h-screen min-h-screen`}
                 >
                     <ThemeProvider
                         attribute="class"

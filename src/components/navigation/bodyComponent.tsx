@@ -5,6 +5,10 @@ import Providers from "~/app/providers";
 import MobileNavBar from "./mobileNavBar";
 import TopNav from "./topnav";
 import SideNavBar from "./sideNavBar";
+import { useQuery } from "@tanstack/react-query";
+import { Tuser } from "~/types/types";
+import axios from "axios";
+import ContentComponent from "./contentComponent";
 
 interface ChildComponentProps {
     children: React.ReactNode;
@@ -15,22 +19,19 @@ export default function BodyComponent({ children }: ChildComponentProps) {
         useState<boolean>(false);
 
     return (
-        <div>
+        <div className="min-h-screen">
             <Providers>
                 {toggleHamburgerMenu ? (
                     <MobileNavBar
                         setToggleHamburgerMenu={setToggleHamburgerMenu}
                     />
                 ) : (
-                    <>
+                    <div className="min-h-screen">
                         <TopNav
                             setToggleHamburgerMenu={setToggleHamburgerMenu}
                         />
-                        <div className="flex flex-row gap-0 md:gap-0">
-                            <SideNavBar />
-                            {children}
-                        </div>
-                    </>
+                        <ContentComponent children={children} />
+                    </div>
                 )}
             </Providers>
         </div>
