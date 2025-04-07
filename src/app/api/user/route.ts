@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic";
 
 import { eq } from "drizzle-orm";
 import { db } from "~/server/db";
-import { users } from "~/server/db/schema";
+import { user } from "~/server/db/schema";
 import { getServerSession } from "next-auth";
 import { authOptions } from "~/app/api/auth/[...nextauth]/route";
 import bcrypt from "bcrypt";
@@ -13,8 +13,8 @@ export async function GET() {
 
         const userInfo = await db
             .select()
-            .from(users)
-            .where(eq(users.email, session?.user.email as string));
+            .from(user)
+            .where(eq(user.email, session?.user.email as string));
 
         return new Response(JSON.stringify({ userInfo: userInfo[0] }));
     } catch (error) {
@@ -30,9 +30,9 @@ export async function PUT(req: Request) {
         const newUsername = url.searchParams.get("newUsername");
 
         const updateResult = await db
-            .update(users)
+            .update(user)
             .set({ name: newUsername })
-            .where(eq(users.email, userEmail as string));
+            .where(eq(user.email, userEmail as string));
 
         if (updateResult.rowCount && updateResult?.rowCount > 0)
             return new Response(JSON.stringify({ status: "success" }));
@@ -56,8 +56,8 @@ export async function POST(req: Request) {
 
         const selectResult = await db
             .select()
-            .from(users)
-            .where(eq(users.email, userEmail as string));
+            .from(user)
+            .where(eq(user.email, userEmail as string));
 
         const userInfo = selectResult[0];
 
@@ -70,9 +70,9 @@ export async function POST(req: Request) {
             const hashPassword = await bcrypt.hash(values.newPassword, 10);
 
             const updateResult = await db
-                .update(users)
+                .update(user)
                 .set({ password: hashPassword })
-                .where(eq(users.email, userEmail as string));
+                .where(eq(user.email, userEmail as string));
 
             if (updateResult.rowCount && updateResult?.rowCount > 0)
                 return new Response(JSON.stringify({ status: "success" }));
@@ -98,8 +98,8 @@ export async function DELETE(req: Request) {
         const userEmail = url.searchParams.get("userEmail");
 
         const updateResult = await db
-            .delete(users)
-            .where(eq(users.email, userEmail as string));
+            .delete(user)
+            .where(eq(user.email, userEmail as string));
 
         if (updateResult.rowCount && updateResult?.rowCount > 0)
             return new Response(JSON.stringify({ status: "success" }));

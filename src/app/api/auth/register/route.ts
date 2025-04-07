@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import { db } from "~/server/db";
-import { users } from "~/server/db/schema";
+import { user } from "~/server/db/schema";
 import { v4 as uuidv4 } from "uuid";
 import bcrypt from "bcrypt";
 import { sendEmail } from "~/lib/mailer";
@@ -10,8 +10,8 @@ export async function POST(req: Request) {
 
     const usersWithEmail = await db
         .select()
-        .from(users)
-        .where(eq(users.email, values.email));
+        .from(user)
+        .where(eq(user.email, values.email));
 
     if (usersWithEmail.length > 0)
         return new Response(
@@ -25,7 +25,7 @@ export async function POST(req: Request) {
     const verificationCode =
         Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
 
-    await db.insert(users).values({
+    await db.insert(user).values({
         id: userId,
         email: values.email,
         emailVerified: false,

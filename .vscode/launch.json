@@ -1,0 +1,20 @@
+// .vscode/launch.json
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Next.js: Attach to Node", // Or any name you prefer
+        "type": "node",
+        "request": "attach", // We are attaching to an already running process
+        "skipFiles": ["<node_internals>/**"], // Helps focus on your code
+        "port": 9229, // Default inspect port. Change if you used a different port in NODE_OPTIONS
+        "address": "localhost",
+        "localRoot": "${workspaceFolder}",
+        "remoteRoot": "${workspaceFolder}", // Usually the same for local dev
+        "restart": true, // Automatically try to re-attach if the connection drops
+        "sourceMaps": true, // Enable source maps for better debugging TS/JS
+        "protocol": "inspector" // Default protocol
+      }
+      // You can add other configurations here if needed
+    ]
+  }

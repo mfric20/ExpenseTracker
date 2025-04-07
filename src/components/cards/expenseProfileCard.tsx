@@ -18,6 +18,7 @@ import { HeartIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useToast } from "~/components/hooks/use-toast";
 import { useMutation, UseQueryResult } from "@tanstack/react-query";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 export default function ExpenseProfileCard({
     expenseProfile,
@@ -36,6 +37,7 @@ export default function ExpenseProfileCard({
     >;
 }) {
     const { toast } = useToast();
+    const router = useRouter();
 
     const deleteExpenseProfileMutation = useMutation({
         mutationKey: ["deleteExpenseProfileMutation"],
@@ -76,7 +78,14 @@ export default function ExpenseProfileCard({
                     {expenseProfile.name}
                 </div>
                 <div className="flex gap-2 justify-center items-center h-1/4">
-                    <Button className="px-8">View</Button>
+                    <Button
+                        onClick={() =>
+                            router.push(`/expenseProfile/${expenseProfile.id}`)
+                        }
+                        className="px-8"
+                    >
+                        View
+                    </Button>
                     <HeartIcon
                         onClick={async () => {
                             setFavoriteMutation.mutate();

@@ -21,3 +21,4 @@
 -   [ ] Add balance management features
 -   [ ] Add graphs
 -   [ ] Add AI features
+-   [ ] Navigation improvements

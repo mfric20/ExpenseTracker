@@ -47,19 +47,10 @@ export default function TopNav({
                         </div>
                         {screenWidth > 900 ? (
                             <div className="flex flex-row gap-2 m-auto">
-                                {paths?.map((path) => {
-                                    return (
-                                        <div
-                                            key={paths?.indexOf(path)}
-                                            className="flex text-center flex-row gap-2 text-lg mt-[1px] font-normal opacity-75"
-                                        >
-                                            <span className="text-slate-500">
-                                                /
-                                            </span>
-                                            <span>{path}</span>
-                                        </div>
-                                    );
-                                })}
+                                <div className="flex text-center flex-row gap-2 text-lg mt-[1px] font-normal opacity-75">
+                                    <span className="text-slate-500">/</span>
+                                    <span>{paths[0]}</span>
+                                </div>
                             </div>
                         ) : (
                             <></>

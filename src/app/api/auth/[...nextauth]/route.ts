@@ -4,7 +4,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import { GoogleProfile } from "next-auth/providers/google";
 import { db } from "~/server/db";
-import { users } from "~/server/db/schema";
+import { user } from "~/server/db/schema";
 import { v4 as uuidv4 } from "uuid";
 import bcrypt from "bcrypt";
 import { JWT } from "next-auth/jwt";
@@ -23,28 +23,28 @@ export const authOptions = {
 
                 const query = await db
                     .select()
-                    .from(users)
+                    .from(user)
                     .where(
                         and(
-                            eq(users.email, email),
-                            eq(users.provider, "credentials"),
+                            eq(user.email, email),
+                            eq(user.provider, "credentials"),
                         ),
                     );
 
                 if (query.length < 1) throw new Error("invalidCredentials");
 
-                const user = query[0];
+                const userRes = query[0];
 
-                if (user?.emailVerified == false)
-                    throw new Error(`emailNotVerified&email=${user?.email}`);
+                if (userRes?.emailVerified == false)
+                    throw new Error(`emailNotVerified&email=${userRes?.email}`);
 
                 const passwordMatch = await bcrypt.compare(
                     password,
-                    user?.password || "",
+                    userRes?.password || "",
                 );
 
                 if (passwordMatch) {
-                    return user as User;
+                    return userRes as User;
                 } else {
                     throw new Error("invalidCredentials");
                 }
@@ -61,13 +61,13 @@ export const authOptions = {
                 const googleProfile = signInInfo.profile as GoogleProfile;
                 const query = await db
                     .select()
-                    .from(users)
-                    .where(eq(users.email, googleProfile.email));
+                    .from(user)
+                    .where(eq(user.email, googleProfile.email));
 
                 const userId = uuidv4();
 
                 if (query.length === 0) {
-                    await db.insert(users).values({
+                    await db.insert(user).values({
                         id: userId,
                         email: googleProfile.email,
                         emailVerified: googleProfile.email_verified,
@@ -79,8 +79,8 @@ export const authOptions = {
                 }
 
                 if (query.length > 0) {
-                    const user = query[0];
-                    if (user?.provider != "google")
+                    const userRes = query[0];
+                    if (userRes?.provider != "google")
                         throw new Error("emailError");
                 }
 

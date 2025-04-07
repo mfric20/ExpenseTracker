@@ -3,7 +3,7 @@ import { UploadThingError } from "uploadthing/server";
 import { getServerSession } from "next-auth/next";
 import { db } from "~/server/db";
 import { authOptions } from "~/app/api/auth/[...nextauth]/route";
-import { users } from "~/server/db/schema";
+import { user } from "~/server/db/schema";
 import { eq } from "drizzle-orm";
 
 const f = createUploadthing();
@@ -18,9 +18,9 @@ export const ourFileRouter = {
         })
         .onUploadComplete(async ({ metadata, file }) => {
             await db
-                .update(users)
+                .update(user)
                 .set({ image: file.url })
-                .where(eq(users.email, metadata.userEmail));
+                .where(eq(user.email, metadata.userEmail));
 
             // !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
             return { uploadedBy: metadata.userEmail };

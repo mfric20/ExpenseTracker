@@ -3,7 +3,7 @@ export const dynamic = "force-dynamic";
 import { v4 as uuidv4 } from "uuid";
 import { asc, desc, eq } from "drizzle-orm";
 import { db } from "~/server/db";
-import { expenseProfiles, users } from "~/server/db/schema";
+import { expenseProfile, user } from "~/server/db/schema";
 import { getServerSession } from "next-auth";
 import { authOptions } from "~/app/api/auth/[...nextauth]/route";
 
@@ -13,16 +13,16 @@ export async function GET() {
 
         const usersResponse = await db
             .select()
-            .from(users)
-            .where(eq(users.email, session?.user.email as string));
-        const user = usersResponse[0];
+            .from(user)
+            .where(eq(user.email, session?.user.email as string));
+        const userRes = usersResponse[0];
 
-        if (user) {
+        if (userRes) {
             const exponseProfilesResponse = await db
                 .select()
-                .from(expenseProfiles)
-                .where(eq(expenseProfiles.userId, user?.id)).orderBy(
-                    desc(expenseProfiles.favorite), asc(expenseProfiles.name));
+                .from(expenseProfile)
+                .where(eq(expenseProfile.userId, userRes?.id)).orderBy(
+                    desc(expenseProfile.favorite), asc(expenseProfile.name));
 
             return new Response(
                 JSON.stringify({ expenseProfiles: exponseProfilesResponse }),
@@ -44,18 +44,18 @@ export async function POST(req: Request) {
 
         const usersResponse = await db
             .select()
-            .from(users)
-            .where(eq(users.email, session?.user.email as string));
-        const user = usersResponse[0];
+            .from(user)
+            .where(eq(user.email, session?.user.email as string));
+        const userRes = usersResponse[0];
 
         const expenseProfileId = uuidv4();
 
-        if (user) {
+        if (userRes) {
             const exponseProfilesResponse = await db
-                .insert(expenseProfiles)
+                .insert(expenseProfile)
                 .values({
                     id: expenseProfileId,
-                    userId: user.id,
+                    userId: userRes.id,
                     color: values.color,
                     name: values.name,
                     favorite: false,
@@ -82,8 +82,8 @@ export async function DELETE(req: Request) {
         const expenseProfileId = url.searchParams.get("expenseProfileId");
 
         const exponseProfilesResponse = await db
-            .delete(expenseProfiles)
-            .where(eq(expenseProfiles.id, expenseProfileId ?? "")).returning();
+            .delete(expenseProfile)
+            .where(eq(expenseProfile.id, expenseProfileId ?? "")).returning();
 
         if (exponseProfilesResponse.length == 0) {
             return new Response(

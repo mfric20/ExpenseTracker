@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import { db } from "~/server/db";
-import { expenseProfiles } from "~/server/db/schema";
+import { expenseProfile } from "~/server/db/schema";
 
 export async function PUT(req: Request) {
     try {
@@ -10,15 +10,15 @@ export async function PUT(req: Request) {
 
         const expenseProfileResponse = await db
             .select()
-            .from(expenseProfiles)
-            .where(eq(expenseProfiles.id, expenseProfileId ?? ""));
-        const expenseProfile = expenseProfileResponse[0];
+            .from(expenseProfile)
+            .where(eq(expenseProfile.id, expenseProfileId ?? ""));
+        const expenseProfileRes = expenseProfileResponse[0];
 
-        if (expenseProfile) {
+        if (expenseProfileRes) {
             const expenseProfilesResponse = await db
-                .update(expenseProfiles)
-                .set({ favorite: !expenseProfile?.favorite })
-                .where(eq(expenseProfiles.id, expenseProfileId ?? ""));
+                .update(expenseProfile)
+                .set({ favorite: !expenseProfileRes?.favorite })
+                .where(eq(expenseProfile.id, expenseProfileId ?? ""));
 
             return new Response(JSON.stringify({ status: "successful" }));
         }

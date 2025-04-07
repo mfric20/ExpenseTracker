@@ -1,20 +1,20 @@
 import { eq } from "drizzle-orm";
 import { sendEmail } from "~/lib/mailer";
 import { db } from "~/server/db";
-import { users } from "~/server/db/schema";
+import { user } from "~/server/db/schema";
 
 export async function POST(req: Request) {
   const { verificationCode, userId } = await req.json();
 
   const response = await db
-    .select({ verificationCode: users.verificationCode })
-    .from(users)
-    .where(eq(users.id, userId));
+    .select({ verificationCode: user.verificationCode })
+    .from(user)
+    .where(eq(user.id, userId));
 
   const databaseCode = response[0]?.verificationCode;
 
   if (databaseCode == verificationCode) {
-    const query = await db.update(users).set({ emailVerified: true });
+    const query = await db.update(user).set({ emailVerified: true });
     return new Response(JSON.stringify({ status: "successful" }));
   }
 
@@ -32,10 +32,10 @@ export async function PUT(req: Request) {
     Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
   try {
     const query: { userId: string }[] = await db
-      .update(users)
+      .update(user)
       .set({ verificationCode: verificationCode })
-      .where(eq(users.email, email))
-      .returning({ userId: users.id });
+      .where(eq(user.email, email))
+      .returning({ userId: user.id });
 
     const userId = query[0]?.userId;
 
