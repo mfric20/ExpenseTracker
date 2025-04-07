@@ -36,8 +36,10 @@ export const expense = createTable("expense", {
     id: uuid("id").primaryKey().unique(),
     name: varchar("name", { length: 256 }),
     description: varchar("description", { length: 256 }),
-    type: varchar("type", { length: 256 }),
     createdAt: date("createdAt").defaultNow(),
+    type: uuid("type")
+        .references(() => expenseType.id, { onDelete: "cascade" })
+        .notNull(),
     amount: integer("amount"),
     expenseProfileId: uuid("expenseProfileId")
         .references(() => expenseProfile.id, { onDelete: "cascade" })
@@ -47,7 +49,4 @@ export const expense = createTable("expense", {
 export const expenseType = createTable("expenseType", {
     id: uuid("id").primaryKey().unique(),
     name: varchar("name", { length: 256 }),
-    expenseId: uuid("expenseId")
-        .references(() => expense.id, { onDelete: "cascade" })
-        .notNull(),
 });

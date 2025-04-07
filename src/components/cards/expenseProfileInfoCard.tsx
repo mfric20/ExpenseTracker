@@ -3,7 +3,6 @@ import axios from "axios";
 import { useEffect } from "react";
 import { TExpenseProfile } from "~/types/types";
 import { HeartIcon, PencilIcon } from "@heroicons/react/24/outline";
-import { Button } from "../ui/button";
 
 export default function ExpenseProfileInfoCard({ id }: { id: string }) {
     const expenseProfileQuery = useQuery<TExpenseProfile>({
