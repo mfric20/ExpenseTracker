@@ -40,6 +40,7 @@ export async function POST(req: Request) {
         const values: {
             name: string;
             color: string;
+            budget: number;
         } = await req.json();
 
         const usersResponse = await db
@@ -57,6 +58,7 @@ export async function POST(req: Request) {
                     id: expenseProfileId,
                     userId: userRes.id,
                     color: values.color,
+                    budget: values.budget,
                     name: values.name,
                     favorite: false,
                 }).returning();

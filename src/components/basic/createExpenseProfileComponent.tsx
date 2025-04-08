@@ -26,6 +26,9 @@ import axios from "axios";
 const formSchema = z.object({
     name: z.string().min(2, { message: "Name must be at least 2 characters." }),
     color: z.string(),
+    budget: z.number().min(0, {
+        message: "Budget must be a positive number.",
+    }),
 });
 
 export default function CreateExpenseProfileComponent() {
@@ -50,11 +53,13 @@ export default function CreateExpenseProfileComponent() {
         defaultValues: {
             name: "",
             color: "#FFFFFF",
+            budget: 0,
         },
     });
 
     function onSubmit(values: z.infer<typeof formSchema>) {
         values.color = selectedColor;
+        values.budget = Number(values.budget);
         createExpenseProfileMutation.mutate(values);
     }
 
@@ -87,6 +92,35 @@ export default function CreateExpenseProfileComponent() {
                                                 <Input
                                                     placeholder="Name of the profile..."
                                                     {...field}
+                                                />
+                                            </FormControl>
+                                            <FormMessage className="col-start-2 col-span-3" />
+                                        </div>
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={form.control}
+                                name="budget"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <div className="grid grid-cols-4 items-center gap-2">
+                                            <FormLabel className="text-right">
+                                                Budget
+                                            </FormLabel>
+                                            <FormControl className="col-span-3">
+                                                <Input
+                                                    type="number"
+                                                    placeholder="Monthly budget..."
+                                                    {...field}
+                                                    value={field.value || ""} // Ensure the value is not undefined
+                                                    onChange={(e) =>
+                                                        field.onChange(
+                                                            e.target
+                                                                .valueAsNumber,
+                                                        )
+                                                    } // Parse as number
                                                 />
                                             </FormControl>
                                             <FormMessage className="col-start-2 col-span-3" />

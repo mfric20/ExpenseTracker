@@ -1,15 +1,21 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { useEffect } from "react";
-import { TExpenseProfile } from "~/types/types";
+import { useEffect, useState } from "react";
+import { Texpense, TExpenseProfile } from "~/types/types";
 import { HeartIcon, PencilIcon } from "@heroicons/react/24/outline";
 
 export default function ExpenseProfileInfoCard({ id }: { id: string }) {
-    const expenseProfileQuery = useQuery<TExpenseProfile>({
+    const [budget, setBudget] = useState<number>(0);
+    const [spent, setSpent] = useState<number>(0);
+
+    const expenseProfileQuery = useQuery<{
+        expenseProfile: TExpenseProfile;
+        expenses: Array<Texpense>;
+    }>({
         queryKey: ["getExpenseProfile"],
         queryFn: async () => {
             const response = await axios.get(`/api/expenseProfile/${id}`);
-            return response.data.expenseProfile;
+            return response.data;
         },
     });
 
@@ -20,10 +26,18 @@ export default function ExpenseProfileInfoCard({ id }: { id: string }) {
         fetchExpenseProfile();
     }, []);
 
-    const expenseProfile = expenseProfileQuery.data;
+    useEffect(() => {
+        setBudget(expenseProfileQuery?.data?.expenseProfile?.budget ?? 0);
+        let totalSpent = 0;
+        expenseProfileQuery?.data?.expenses?.forEach((expense: Texpense) => {
+            totalSpent += expense.amount ?? 0;
+        });
+        setSpent(totalSpent);
+    }, [expenseProfileQuery.isFetching]);
 
-    const spent = "75";
-    const budget = "100";
+    const expenseProfile = expenseProfileQuery?.data?.expenseProfile;
+    const expenses = expenseProfileQuery?.data?.expenses;
+
     return (
         <div>
             {expenseProfileQuery.isFetching ? (
@@ -65,12 +79,14 @@ export default function ExpenseProfileInfoCard({ id }: { id: string }) {
                                 </div>
                                 <div className="flex justify-between text-sm">
                                     <span>Spent:</span>
-                                    <span className="font-medium">0 €</span>
+                                    <span className="font-medium">
+                                        {spent} €
+                                    </span>
                                 </div>
                                 <div className="flex justify-between text-sm">
                                     <span>Remaining:</span>
                                     <span className="font-medium text-emerald-600">
-                                        remaining
+                                        {budget - spent} €
                                     </span>
                                 </div>
                             </div>
@@ -79,7 +95,7 @@ export default function ExpenseProfileInfoCard({ id }: { id: string }) {
                                     <div
                                         className="h-full rounded-full"
                                         style={{
-                                            width: `${(Number.parseFloat(spent.replace(/[^0-9.]/g, "")) / Number.parseFloat(budget.replace(/[^0-9.]/g, ""))) * 100}%`,
+                                            width: `${(Number.parseFloat(spent?.toString()) / Number.parseFloat(budget?.toString())) * 100}%`,
                                             backgroundColor:
                                                 expenseProfile?.color ?? "",
                                         }}
@@ -87,8 +103,10 @@ export default function ExpenseProfileInfoCard({ id }: { id: string }) {
                                 </div>
                                 <p className="mt-2 text-xs text-muted-foreground text-center">
                                     {Math.round(
-                                        (Number.parseFloat(spent) /
-                                            Number.parseFloat(budget)) *
+                                        (Number.parseFloat(spent?.toString()) /
+                                            Number.parseFloat(
+                                                budget?.toString(),
+                                            )) *
                                             100,
                                     )}
                                     % of budget used

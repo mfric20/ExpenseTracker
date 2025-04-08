@@ -28,7 +28,7 @@ export default function DashboardPage() {
 
         updateWidth();
         window.addEventListener("resize", updateWidth);
-
+        expenseProfilesQuery.refetch();
         return () => window.removeEventListener("resize", updateWidth);
     }, []);
 

@@ -22,3 +22,5 @@
 -   [ ] Add graphs
 -   [ ] Add AI features
 -   [ ] Navigation improvements
+-   [ ] Scaling imporovements
+-   [ ] Refactoring
