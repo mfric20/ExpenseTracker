@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic";
 
 import { and, asc, desc, eq } from "drizzle-orm";
 import { db } from "~/server/db";
-import { expense, expenseProfile, user } from "~/server/db/schema";
+import { expense, expenseProfile, expenseType, user } from "~/server/db/schema";
 import { getServerSession } from "next-auth";
 import { authOptions } from "~/app/api/auth/[...nextauth]/route";
 
@@ -36,10 +36,17 @@ export async function GET(req:Request, { params }: RouteContext) {
                 .from(expenseProfile)
                 .where(eq(expenseProfile.id, params.id));
 
-            const expenses = await db.select().from(expense)
-                .where(
-                        eq(expense.expenseProfileId, params.id),
-                )
+                const expenses = await db
+                .select({
+                    id: expense.id,
+                    name: expense.name,
+                    amount: expense.amount,
+                    createdAt: expense.createdAt,
+                    typeName: expenseType.name, // Include the name of the type
+                })
+                .from(expense)
+                .leftJoin(expenseType, eq(expense.type, expenseType.id)) // Join with expenseType
+                .where(eq(expense.expenseProfileId, params.id))
                 .orderBy(desc(expense.createdAt));
 
             return new Response(

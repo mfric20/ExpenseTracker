@@ -99,3 +99,38 @@ export async function DELETE(req: Request) {
         console.log("Error on DELETE /expenseProfiles", error);
     }
 }
+
+export async function PUT(req: Request) {
+    try {
+        const url = new URL(req.url);
+
+        const expenseProfileId = url.searchParams.get("expenseProfileId");
+
+        const values: {
+            name: string;
+            color: string;
+            budget: number;
+        } = await req.json();
+
+        const exponseProfilesResponse = await db
+            .update(expenseProfile)
+            .set({
+                name: values.name,
+                color: values.color,
+                budget: values.budget,
+            })
+            .where(eq(expenseProfile.id, expenseProfileId ?? ""))
+            .returning();
+
+        if (exponseProfilesResponse.length == 0) {
+            return new Response(
+                JSON.stringify({ error: "Error updating expense profile" }),
+                { status: 500 },
+            );
+        }
+
+        return new Response(JSON.stringify({ status: "successful" }));
+    } catch (error) {
+        console.log("Error on PUT /expenseProfiles", error);
+    }
+}

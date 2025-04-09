@@ -17,3 +17,4 @@ export type credentialsProfile = {
 export type Tuser = typeof user.$inferSelect;
 export type TExpenseProfile = typeof expenseProfile.$inferSelect;
 export type Texpense = typeof expense.$inferSelect;
+

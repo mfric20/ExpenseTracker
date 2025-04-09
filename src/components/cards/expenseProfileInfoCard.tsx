@@ -1,8 +1,33 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Texpense, TExpenseProfile } from "~/types/types";
+import { TExpenseProfile } from "~/types/types";
 import { HeartIcon, PencilIcon } from "@heroicons/react/24/outline";
+import { Dialog, DialogTrigger } from "@radix-ui/react-dialog";
+import EditExpenseProfileComponent from "../basic/editExpenseProfileComponent";
+import React from "react";
+import { Pie } from "react-chartjs-2";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+
+ChartJS.register(ArcElement, Tooltip, Legend);
+
+interface Expense {
+    id: string;
+    type: string;
+}
+
+interface Props {
+    expenses: Expense[];
+}
+
+interface Texpense {
+    id: string;
+    name: string;
+    amount: number;
+    createdAt: string; // or Date, depending on your API response
+    type: string; // This is the type ID
+    typeName: string; // Add this to include the name of the type
+}
 
 export default function ExpenseProfileInfoCard({ id }: { id: string }) {
     const [budget, setBudget] = useState<number>(0);
@@ -16,6 +41,19 @@ export default function ExpenseProfileInfoCard({ id }: { id: string }) {
         queryFn: async () => {
             const response = await axios.get(`/api/expenseProfile/${id}`);
             return response.data;
+        },
+    });
+
+    const setFavoriteMutation = useMutation({
+        mutationKey: ["setFavoriteMutation"],
+        mutationFn: async () => {
+            const response = await axios.put(
+                `/api/expenseProfiles/favorites?expenseProfileId=${id}`,
+            );
+            return response.data;
+        },
+        onSuccess: () => {
+            expenseProfileQuery.refetch();
         },
     });
 
@@ -38,6 +76,30 @@ export default function ExpenseProfileInfoCard({ id }: { id: string }) {
     const expenseProfile = expenseProfileQuery?.data?.expenseProfile;
     const expenses = expenseProfileQuery?.data?.expenses;
 
+    const typeCounts =
+        expenses?.reduce((acc: Record<string, number>, expense) => {
+            acc[expense.typeName] = (acc[expense.typeName] || 0) + 1;
+            return acc;
+        }, {}) || {};
+
+    const data = {
+        labels: Object.keys(typeCounts), // Expense types
+        datasets: [
+            {
+                label: "Number of Expenses",
+                data: Object.values(typeCounts), // Number of expenses per type
+                backgroundColor: [
+                    "#FF5733",
+                    "#33C1FF",
+                    "#FFC300",
+                    "#8E44AD",
+                    "#2ECC71",
+                    "#fa278b",
+                ],
+                borderWidth: 1,
+            },
+        ],
+    };
     return (
         <div>
             {expenseProfileQuery.isFetching ? (
@@ -49,9 +111,23 @@ export default function ExpenseProfileInfoCard({ id }: { id: string }) {
                     <div className="h-fit border-2 rounded-md p-10 w-1/4">
                         <div className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <HeartIcon
+                                onClick={() => {
+                                    setFavoriteMutation.mutate();
+                                }}
                                 className={`w-8 transition-colors duration-200 ${expenseProfile?.favorite ? "fill-red-500 text-red-500 hover:fill-none hover:text-primary" : "hover:fill-red-500 hover:text-red-500"} hover:cursor-pointer `}
                             />
-                            <PencilIcon className="w-7 hover:cursor-pointer" />
+                            <Dialog>
+                                <DialogTrigger asChild>
+                                    <PencilIcon className="w-7 hover:cursor-pointer" />
+                                </DialogTrigger>
+                                {expenseProfile ? (
+                                    <EditExpenseProfileComponent
+                                        expenseProfile={expenseProfile}
+                                    />
+                                ) : (
+                                    <></>
+                                )}
+                            </Dialog>
                         </div>
                         <div className="flex flex-col items-center text-center">
                             <div
@@ -114,7 +190,9 @@ export default function ExpenseProfileInfoCard({ id }: { id: string }) {
                             </div>
                         </div>
                     </div>
-                    <div className="w-3/4 border-2 rounded-md">graphs</div>
+                    <div className="w-3/4 p-8 flex justify-center max-h-[432px] border-2 rounded-md">
+                        <Pie data={data} />
+                    </div>
                 </div>
             )}
         </div>
