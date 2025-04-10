@@ -7,26 +7,32 @@ import { Dialog, DialogTrigger } from "@radix-ui/react-dialog";
 import EditExpenseProfileComponent from "../basic/editExpenseProfileComponent";
 import React from "react";
 import { Pie } from "react-chartjs-2";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { Bar } from "react-chartjs-2";
+import {
+    Chart as ChartJS,
+    ArcElement,
+    Tooltip,
+    Legend,
+    BarElement,
+    CategoryScale,
+    LinearScale,
+} from "chart.js";
 
-ChartJS.register(ArcElement, Tooltip, Legend);
-
-interface Expense {
-    id: string;
-    type: string;
-}
-
-interface Props {
-    expenses: Expense[];
-}
-
+ChartJS.register(
+    ArcElement,
+    Tooltip,
+    Legend,
+    BarElement,
+    CategoryScale,
+    LinearScale,
+);
 interface Texpense {
     id: string;
     name: string;
     amount: number;
-    createdAt: string; // or Date, depending on your API response
-    type: string; // This is the type ID
-    typeName: string; // Add this to include the name of the type
+    createdAt: string;
+    type: string;
+    typeName: string;
 }
 
 export default function ExpenseProfileInfoCard({ id }: { id: string }) {
@@ -82,12 +88,48 @@ export default function ExpenseProfileInfoCard({ id }: { id: string }) {
             return acc;
         }, {}) || {};
 
+    const barOptions = {
+        plugins: {
+            legend: {
+                display: false,
+            },
+        },
+        responsive: true,
+        maintainAspectRatio: false,
+    };
+
     const data = {
-        labels: Object.keys(typeCounts), // Expense types
+        labels: Object.keys(typeCounts),
         datasets: [
             {
                 label: "Number of Expenses",
-                data: Object.values(typeCounts), // Number of expenses per type
+                data: Object.values(typeCounts),
+                backgroundColor: [
+                    "#FF5733",
+                    "#33C1FF",
+                    "#FFC300",
+                    "#8E44AD",
+                    "#2ECC71",
+                    "#fa278b",
+                ],
+                borderWidth: 1,
+            },
+        ],
+    };
+
+    const categorySpending =
+        expenses?.reduce((acc: Record<string, number>, expense) => {
+            acc[expense.typeName] =
+                (acc[expense.typeName] || 0) + expense.amount;
+            return acc;
+        }, {}) || {};
+
+    const barData = {
+        labels: Object.keys(categorySpending),
+        datasets: [
+            {
+                label: "Amount Spent (€)",
+                data: Object.values(categorySpending),
                 backgroundColor: [
                     "#FF5733",
                     "#33C1FF",
@@ -190,8 +232,13 @@ export default function ExpenseProfileInfoCard({ id }: { id: string }) {
                             </div>
                         </div>
                     </div>
-                    <div className="w-3/4 p-8 flex justify-center max-h-[432px] border-2 rounded-md">
-                        <Pie data={data} />
+                    <div className="w-3/4 p-8 pt-16 flex gap-8 justify-center max-h-[432px] border-2 rounded-md">
+                        <div>
+                            <Pie data={data} />
+                        </div>
+                        <div className="flex pt-36 justify-self-end max-h-[300px] ">
+                            <Bar data={barData} options={barOptions} />
+                        </div>
                     </div>
                 </div>
             )}
