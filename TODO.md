@@ -17,9 +17,9 @@
 -   [x] Create image uploading
 -   [x] Create/Edit/Delete profile
 -   [x] Navigation system and dashboard
--   [ ] Balance profiles feature
--   [ ] Add balance management features
--   [ ] Add graphs
+-   [x] Balance profiles feature
+-   [ ] Add expenses tab
+-   [x] Add graphs
 -   [ ] Add AI features
 -   [ ] Navigation improvements
 -   [ ] Scaling imporovements

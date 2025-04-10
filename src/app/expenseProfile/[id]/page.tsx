@@ -3,22 +3,6 @@
 import { useState } from "react";
 import ExpenseProfileExpensesCard from "~/components/cards/expenseProfileExpensesCard";
 import ExpenseProfileInfoCard from "~/components/cards/expenseProfileInfoCard";
-import { TrashIcon } from "@heroicons/react/24/outline";
-import { Button } from "~/components/ui/button";
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-} from "~/components/ui/alert-dialog";
-import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
-import { useRouter } from "next/navigation";
 
 interface Props {
     params: {
@@ -27,22 +11,6 @@ interface Props {
 }
 
 export default function ExpenseProfile({ params }: Props) {
-    const router = useRouter();
-
-    const deleteExpenseProfileMutation = useMutation({
-        mutationKey: ["deleteExpenseProfileMutation"],
-        mutationFn: async () => {
-            const expenseProfileId = params.id;
-            const response = await axios.delete(
-                `/api/expenseProfiles?expenseProfileId=${expenseProfileId}`,
-            );
-            return response.data;
-        },
-        onSuccess: () => {
-            router.push("/dashboard");
-        },
-    });
-
     const [selectedTab, setSelectedTab] = useState<String>("info");
     const { id } = params;
 
@@ -68,37 +36,6 @@ export default function ExpenseProfile({ params }: Props) {
                     >
                         <span>Expenses</span>
                     </div>
-                </div>
-                <div className="ml-auto">
-                    <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                            <Button className="text-base bg-red-500 hover:bg-red-600 font-semibold">
-                                <TrashIcon className="w-5" />
-                                <span className="ml-2">Delete</span>
-                            </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                            <AlertDialogHeader>
-                                <AlertDialogTitle>
-                                    Are you sure?
-                                </AlertDialogTitle>
-                                <AlertDialogDescription>
-                                    This action cannot be undone. This will
-                                    permanently delete this Expense profile!
-                                </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction
-                                    onClick={() =>
-                                        deleteExpenseProfileMutation.mutate()
-                                    }
-                                >
-                                    Continue
-                                </AlertDialogAction>
-                            </AlertDialogFooter>
-                        </AlertDialogContent>
-                    </AlertDialog>
                 </div>
             </div>
             {selectedTab === "info" ? (

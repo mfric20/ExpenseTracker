@@ -37,17 +37,18 @@ export async function GET(req:Request, { params }: RouteContext) {
                 .where(eq(expenseProfile.id, params.id));
 
                 const expenses = await db
-                .select({
-                    id: expense.id,
-                    name: expense.name,
-                    amount: expense.amount,
-                    createdAt: expense.createdAt,
-                    typeName: expenseType.name, // Include the name of the type
-                })
-                .from(expense)
-                .leftJoin(expenseType, eq(expense.type, expenseType.id)) // Join with expenseType
-                .where(eq(expense.expenseProfileId, params.id))
-                .orderBy(desc(expense.createdAt));
+    .select({
+        id: expense.id,
+        name: expense.name,
+        amount: expense.amount,
+        createdAt: expense.createdAt,
+        typeName: expenseType.name,
+        type: expense.type,  // Add this to include the type ID
+    })
+    .from(expense)
+    .leftJoin(expenseType, eq(expense.type, expenseType.id))
+    .where(eq(expense.expenseProfileId, params.id))
+    .orderBy(desc(expense.createdAt));
 
             return new Response(
                 JSON.stringify({ expenseProfile: expenseProfileResponse[0], expenses }),
@@ -55,6 +56,33 @@ export async function GET(req:Request, { params }: RouteContext) {
         }
     } catch (error) {
         console.log(`Error on GET /expenseProfile/id`, error);
+        return new Response(
+            JSON.stringify({ error }),
+            { status: 500 }
+        );
+    }
+}
+
+export async function PUT(req: Request, { params }: RouteContext) {
+    try {
+        const { id } = params;
+        const { name, amount, type } = await req.json();
+
+        const expenseResponse = await db
+            .update(expense)
+            .set({
+                name,
+                amount,
+                type, // Update the type field
+            })
+            .where(eq(expense.id, id));
+
+        return new Response(
+            JSON.stringify({ success: true }),
+            { status: 200 }
+        );
+    } catch (error) {
+        console.log(`Error on PUT /expense/id`, error);
         return new Response(
             JSON.stringify({ error }),
             { status: 500 }
