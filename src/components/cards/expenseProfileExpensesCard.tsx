@@ -368,7 +368,7 @@ export default function ExpenseProfileExpensesCard({ id }: Props) {
             </div>
 
             {/* Expenses Table */}
-            <div className="rounded-md border overflow-x-auto">
+            <div className="rounded-md border border-border overflow-x-auto">
                 {!expensesQuery.data || expensesQuery.data.length === 0 ? (
                     <div className="text-center p-8 text-muted-foreground">
                         No expenses found. Create one using the "New Expense"
@@ -380,12 +380,12 @@ export default function ExpenseProfileExpensesCard({ id }: Props) {
                             {table.getHeaderGroups().map((headerGroup) => (
                                 <tr
                                     key={headerGroup.id}
-                                    className="border-b bg-muted/50"
+                                    className="border-b border-border bg-muted/30"
                                 >
                                     {headerGroup.headers.map((header) => (
                                         <th
                                             key={header.id}
-                                            className="h-10 px-2 sm:px-4 text-left align-middle font-medium cursor-pointer hover:bg-muted"
+                                            className="h-10 px-2 sm:px-4 text-left align-middle font-medium cursor-pointer hover:bg-muted/50"
                                             onClick={header.column.getToggleSortingHandler()}
                                         >
                                             <div className="flex items-center gap-2">
@@ -410,7 +410,7 @@ export default function ExpenseProfileExpensesCard({ id }: Props) {
                             {table.getRowModel().rows.map((row) => (
                                 <tr
                                     key={row.id}
-                                    className="border-b hover:bg-muted/50 transition-colors"
+                                    className="border-b border-border hover:bg-muted/30 transition-colors"
                                 >
                                     {row.getVisibleCells().map((cell) => (
                                         <td

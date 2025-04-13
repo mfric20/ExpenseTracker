@@ -15,7 +15,7 @@ export default function ExpenseProfile({ params }: Props) {
     const { id } = params;
 
     return (
-        <div className="flex flex-col px-10 md:px-20 py-14 drop-shadow-md w-full text-primary/75 ">
+        <div className="flex flex-col px-10 md:px-20 py-14 drop-shadow-sm w-full text-primary/75 ">
             <div className="flex flex-col">
                 <div className="flex flex-row justify-center text-2xl md:text-3xl text-primary/80">
                     <div

@@ -42,7 +42,8 @@ export default function TopNav({
                         className="flex items-center gap-2 hover:cursor-pointer"
                     >
                         <span className="text-xl font-semibold">
-                            <span className="text-primary">Expense</span>Tracker
+                            <span className="text-blue-600">Expense</span>
+                            Tracker
                         </span>
                     </div>
                     {screenWidth > 900 && paths?.[0] && (

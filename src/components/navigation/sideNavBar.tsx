@@ -8,8 +8,13 @@ export default function SideNavBar() {
 
     return (
         <div className="min-w-[220px] gap-2 pt-8 pl-6 pr-4 text-lg font-medium flex flex-col top-0 min-h-full border-r-[1px] border-secondary bg-background">
-            {paths?.find((path) => path == "dashboard") ? (
-                <div className="flex text-blue-500 flex-row gap-3 text-center items-center hover:cursor-pointer p-3 rounded-lg bg-blue-50 dark:bg-blue-950/50 transition-colors select-none">
+            {paths?.find(
+                (path) => path == "dashboard" || path == "expenseProfile",
+            ) ? (
+                <div
+                    className="flex text-blue-500 flex-row gap-3 text-center items-center hover:cursor-pointer p-3 rounded-lg bg-blue-50 dark:bg-blue-950/50 transition-colors select-none"
+                    onClick={() => router.push("/dashboard")}
+                >
                     <BookOpenIcon className="h-5 w-5" />
                     <span>Dashboard</span>
                 </div>
