@@ -18,9 +18,11 @@
 -   [x] Create/Edit/Delete profile
 -   [x] Navigation system and dashboard
 -   [x] Balance profiles feature
--   [ ] Add expenses tab
+-   [x] Add expenses tab
+-   [x] Add search and filter for expense types
+-   [x] Fetch expenses only for this month
 -   [x] Add graphs
 -   [ ] Add AI features
--   [ ] Navigation improvements
+-   [x] Navigation improvements
 -   [ ] Scaling imporovements
 -   [ ] Refactoring

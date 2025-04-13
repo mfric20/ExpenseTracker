@@ -1,11 +1,13 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
     createColumnHelper,
     flexRender,
     getCoreRowModel,
     getPaginationRowModel,
+    getSortedRowModel,
     useReactTable,
+    type SortingState,
 } from "@tanstack/react-table";
 import axios from "axios";
 import ExpenseRow from "../table/expenseRow";
@@ -48,7 +50,6 @@ interface ExpenseType {
     name: string;
 }
 
-// Form schema for new expense
 const newExpenseFormSchema = z.object({
     name: z.string().min(2, { message: "Name must be at least 2 characters." }),
     amount: z.coerce
@@ -59,13 +60,44 @@ const newExpenseFormSchema = z.object({
 
 const columnHelper = createColumnHelper<Expense>();
 
-export default function ExpenseProfileExpensesCard({ id }: { id: string }) {
+interface Props {
+    readonly id: string;
+}
+
+const renderExpenseTypeOptions = (expenseTypesQuery: {
+    isLoading: boolean;
+    isError: boolean;
+    data?: ExpenseType[];
+}) => {
+    if (expenseTypesQuery.isLoading) {
+        return (
+            <option value="" disabled>
+                Loading categories...
+            </option>
+        );
+    }
+    if (expenseTypesQuery.isError) {
+        return (
+            <option value="" disabled>
+                Error loading categories
+            </option>
+        );
+    }
+    return expenseTypesQuery.data?.map((type) => (
+        <option key={type.id} value={type.name}>
+            {type.name}
+        </option>
+    ));
+};
+
+export default function ExpenseProfileExpensesCard({ id }: Props) {
     const [pagination, setPagination] = useState({
         pageIndex: 0,
         pageSize: 5,
     });
-
-    // Add state to control dialog open/close
+    const [sorting, setSorting] = useState<SortingState>([]);
+    const [selectedCategory, setSelectedCategory] = useState<string>("all");
+    const [searchQuery, setSearchQuery] = useState<string>("");
     const [dialogOpen, setDialogOpen] = useState(false);
 
     const expensesQuery = useQuery({
@@ -76,7 +108,6 @@ export default function ExpenseProfileExpensesCard({ id }: { id: string }) {
         },
     });
 
-    // Fetch expense types for the dropdown
     const expenseTypesQuery = useQuery({
         queryKey: ["expenseTypes"],
         queryFn: async () => {
@@ -85,7 +116,6 @@ export default function ExpenseProfileExpensesCard({ id }: { id: string }) {
         },
     });
 
-    // Form for new expense
     const form = useForm<z.infer<typeof newExpenseFormSchema>>({
         resolver: zodResolver(newExpenseFormSchema),
         defaultValues: {
@@ -95,7 +125,6 @@ export default function ExpenseProfileExpensesCard({ id }: { id: string }) {
         },
     });
 
-    // Create new expense mutation
     const createExpenseMutation = useMutation({
         mutationKey: ["createExpense"],
         mutationFn: async (data: z.infer<typeof newExpenseFormSchema>) => {
@@ -113,12 +142,10 @@ export default function ExpenseProfileExpensesCard({ id }: { id: string }) {
                 amount: undefined,
                 type: "",
             });
-            // Close dialog on successful submission
             setDialogOpen(false);
         },
     });
 
-    // Submit handler
     function onSubmit(values: z.infer<typeof newExpenseFormSchema>) {
         createExpenseMutation.mutate(values);
     }
@@ -135,6 +162,10 @@ export default function ExpenseProfileExpensesCard({ id }: { id: string }) {
         columnHelper.accessor("typeName", {
             header: "Category",
             cell: (info) => info.getValue(),
+            filterFn: (row, id, value) => {
+                if (value === "all") return true;
+                return row.getValue(id) === value;
+            },
         }),
         columnHelper.accessor("createdAt", {
             header: "Date",
@@ -152,14 +183,37 @@ export default function ExpenseProfileExpensesCard({ id }: { id: string }) {
         }),
     ];
 
+    const filteredData = useMemo(() => {
+        if (!expensesQuery.data) return [];
+        let filtered = expensesQuery.data;
+
+        if (selectedCategory !== "all") {
+            filtered = filtered.filter(
+                (expense: Expense) => expense.typeName === selectedCategory,
+            );
+        }
+
+        if (searchQuery) {
+            const query = searchQuery.toLowerCase();
+            filtered = filtered.filter((expense: Expense) =>
+                expense.name.toLowerCase().includes(query),
+            );
+        }
+
+        return filtered;
+    }, [expensesQuery.data, selectedCategory, searchQuery]);
+
     const table = useReactTable({
-        data: expensesQuery.data || [],
+        data: filteredData,
         columns,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
+        getSortedRowModel: getSortedRowModel(),
         onPaginationChange: setPagination,
+        onSortingChange: setSorting,
         state: {
             pagination,
+            sorting,
         },
         manualPagination: false,
     });
@@ -178,143 +232,140 @@ export default function ExpenseProfileExpensesCard({ id }: { id: string }) {
 
     return (
         <div className="w-full p-6">
+            {/* Header */}
             <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-semibold">Expenses List</h2>
-
-                {/* Use controlled Dialog */}
-                <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                    <DialogTrigger asChild>
-                        <Button>
-                            <PlusIcon className="h-4 w-4 mr-2" />
-                            New Expense
-                        </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                        <DialogHeader>
-                            <DialogTitle>Add New Expense</DialogTitle>
-                            <DialogDescription>
-                                Create a new expense for this profile.
-                            </DialogDescription>
-                        </DialogHeader>
-                        <Form {...form}>
-                            <form
-                                onSubmit={form.handleSubmit(onSubmit)}
-                                className="space-y-4"
-                            >
-                                <FormField
-                                    control={form.control}
-                                    name="name"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Name</FormLabel>
-                                            <FormControl>
-                                                <Input
-                                                    {...field}
-                                                    placeholder="Expense name"
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={form.control}
-                                    name="amount"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Amount</FormLabel>
-                                            <FormControl>
-                                                <Input
-                                                    type="number"
-                                                    placeholder="Amount"
-                                                    {...field}
-                                                    value={field.value ?? ""}
-                                                    onChange={(e) => {
-                                                        const value =
-                                                            e.target.value;
-                                                        field.onChange(
-                                                            value === ""
-                                                                ? undefined
-                                                                : Number(value),
-                                                        );
-                                                    }}
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={form.control}
-                                    name="type"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Category</FormLabel>
-                                            <FormControl>
-                                                <select
-                                                    value={field.value}
-                                                    onChange={field.onChange}
-                                                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                                                >
-                                                    <option value="" disabled>
-                                                        Select a category
-                                                    </option>
-                                                    {expenseTypesQuery.isLoading ? (
+                <div className="flex items-center gap-4">
+                    <Input
+                        type="text"
+                        placeholder="Search expenses..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-[200px]"
+                    />
+                    <select
+                        value={selectedCategory}
+                        onChange={(e) => setSelectedCategory(e.target.value)}
+                        className="flex h-10 w-[180px] rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    >
+                        <option value="all">All Categories</option>
+                        {renderExpenseTypeOptions(expenseTypesQuery)}
+                    </select>
+                    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                        <DialogTrigger asChild>
+                            <Button>
+                                <PlusIcon className="h-4 w-4 mr-2" />
+                                New Expense
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>Add New Expense</DialogTitle>
+                                <DialogDescription>
+                                    Create a new expense for this profile.
+                                </DialogDescription>
+                            </DialogHeader>
+                            <Form {...form}>
+                                <form
+                                    onSubmit={form.handleSubmit(onSubmit)}
+                                    className="space-y-4"
+                                >
+                                    <FormField
+                                        control={form.control}
+                                        name="name"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Name</FormLabel>
+                                                <FormControl>
+                                                    <Input
+                                                        {...field}
+                                                        placeholder="Expense name"
+                                                    />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="amount"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Amount</FormLabel>
+                                                <FormControl>
+                                                    <Input
+                                                        type="number"
+                                                        placeholder="Amount"
+                                                        {...field}
+                                                        value={
+                                                            field.value ?? ""
+                                                        }
+                                                        onChange={(e) => {
+                                                            const value =
+                                                                e.target.value;
+                                                            field.onChange(
+                                                                value === ""
+                                                                    ? undefined
+                                                                    : Number(
+                                                                          value,
+                                                                      ),
+                                                            );
+                                                        }}
+                                                    />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="type"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Category</FormLabel>
+                                                <FormControl>
+                                                    <select
+                                                        value={field.value}
+                                                        onChange={
+                                                            field.onChange
+                                                        }
+                                                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                                                    >
                                                         <option
                                                             value=""
                                                             disabled
                                                         >
-                                                            Loading
-                                                            categories...
+                                                            Select a category
                                                         </option>
-                                                    ) : expenseTypesQuery.isError ? (
-                                                        <option
-                                                            value=""
-                                                            disabled
-                                                        >
-                                                            Error loading
-                                                            categories
-                                                        </option>
-                                                    ) : (
-                                                        expenseTypesQuery.data?.map(
-                                                            (type: any) => (
-                                                                <option
-                                                                    key={
-                                                                        type.id
-                                                                    }
-                                                                    value={
-                                                                        type.id
-                                                                    }
-                                                                >
-                                                                    {type.name}
-                                                                </option>
-                                                            ),
-                                                        )
-                                                    )}
-                                                </select>
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <DialogFooter>
-                                    <Button
-                                        type="submit"
-                                        disabled={
-                                            createExpenseMutation.isPending
-                                        }
-                                    >
-                                        {createExpenseMutation.isPending
-                                            ? "Creating..."
-                                            : "Create Expense"}
-                                    </Button>
-                                </DialogFooter>
-                            </form>
-                        </Form>
-                    </DialogContent>
-                </Dialog>
+                                                        {renderExpenseTypeOptions(
+                                                            expenseTypesQuery,
+                                                        )}
+                                                    </select>
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <DialogFooter>
+                                        <Button
+                                            type="submit"
+                                            disabled={
+                                                createExpenseMutation.isPending
+                                            }
+                                        >
+                                            {createExpenseMutation.isPending
+                                                ? "Creating..."
+                                                : "Create Expense"}
+                                        </Button>
+                                    </DialogFooter>
+                                </form>
+                            </Form>
+                        </DialogContent>
+                    </Dialog>
+                </div>
             </div>
 
+            {/* Expenses Table */}
             <div className="rounded-md border">
                 {!expensesQuery.data || expensesQuery.data.length === 0 ? (
                     <div className="text-center p-8 text-muted-foreground">
@@ -332,12 +383,22 @@ export default function ExpenseProfileExpensesCard({ id }: { id: string }) {
                                     {headerGroup.headers.map((header) => (
                                         <th
                                             key={header.id}
-                                            className="h-10 px-4 text-left align-middle font-medium"
+                                            className="h-10 px-4 text-left align-middle font-medium cursor-pointer hover:bg-muted"
+                                            onClick={header.column.getToggleSortingHandler()}
                                         >
-                                            {flexRender(
-                                                header.column.columnDef.header,
-                                                header.getContext(),
-                                            )}
+                                            <div className="flex items-center gap-2">
+                                                {flexRender(
+                                                    header.column.columnDef
+                                                        .header,
+                                                    header.getContext(),
+                                                )}
+                                                {{
+                                                    asc: " ↓",
+                                                    desc: " ↑",
+                                                }[
+                                                    header.column.getIsSorted() as string
+                                                ] ?? null}
+                                            </div>
                                         </th>
                                     ))}
                                 </tr>
@@ -367,6 +428,7 @@ export default function ExpenseProfileExpensesCard({ id }: { id: string }) {
                 )}
             </div>
 
+            {/* Pagination */}
             <div className="flex items-center justify-between space-x-2 py-4">
                 <div className="flex-1 text-sm text-muted-foreground">
                     {table.getFilteredRowModel().rows.length} expense(s) total

@@ -1,6 +1,6 @@
 export const dynamic = "force-dynamic";
 
-import { and, asc, desc, eq } from "drizzle-orm";
+import { and, desc, eq, sql } from "drizzle-orm";
 import { db } from "~/server/db";
 import { expense, expenseProfile, expenseType, user } from "~/server/db/schema";
 import { getServerSession } from "next-auth";
@@ -43,11 +43,17 @@ export async function GET(req:Request, { params }: RouteContext) {
         amount: expense.amount,
         createdAt: expense.createdAt,
         typeName: expenseType.name,
-        type: expense.type,  // Add this to include the type ID
+        type: expense.type,
     })
     .from(expense)
     .leftJoin(expenseType, eq(expense.type, expenseType.id))
-    .where(eq(expense.expenseProfileId, params.id))
+    .where(
+        and(
+            eq(expense.expenseProfileId, params.id),
+            sql`EXTRACT(MONTH FROM ${expense.createdAt}) = EXTRACT(MONTH FROM CURRENT_DATE)`,
+            sql`EXTRACT(YEAR FROM ${expense.createdAt}) = EXTRACT(YEAR FROM CURRENT_DATE)`
+        )
+    )
     .orderBy(desc(expense.createdAt));
 
             return new Response(
@@ -68,12 +74,12 @@ export async function PUT(req: Request, { params }: RouteContext) {
         const { id } = params;
         const { name, amount, type } = await req.json();
 
-        const expenseResponse = await db
+        await db
             .update(expense)
             .set({
                 name,
                 amount,
-                type, // Update the type field
+                type,
             })
             .where(eq(expense.id, id));
 

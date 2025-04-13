@@ -7,32 +7,32 @@ export default function SideNavBar() {
     const paths = path?.split("/").filter((path) => path != "");
 
     return (
-        <div className="min-w-[180px] gap-4 pt-8 pl-4 pr-2 text-xl font-normal  flex flex-col top-0 min-h-full border-r-[1px] border-secondary">
+        <div className="min-w-[220px] gap-2 pt-8 pl-6 pr-4 text-lg font-medium flex flex-col top-0 min-h-full border-r-[1px] border-secondary bg-background">
             {paths?.find((path) => path == "dashboard") ? (
-                <div className="flex text-blue-500 flex-row gap-2 text-center items-center hover:cursor-pointer">
-                    <BookOpenIcon className="h-6 w-6" />
+                <div className="flex text-blue-500 flex-row gap-3 text-center items-center hover:cursor-pointer p-3 rounded-lg bg-blue-50 dark:bg-blue-950/50 transition-colors select-none">
+                    <BookOpenIcon className="h-5 w-5" />
                     <span>Dashboard</span>
                 </div>
             ) : (
                 <div
-                    className="flex opacity-75 flex-row gap-2 text-center items-center hover:cursor-pointer hover:text-blue-500"
+                    className="flex opacity-75 flex-row gap-3 text-center items-center hover:cursor-pointer hover:text-blue-500 p-3 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-950/50 transition-colors select-none"
                     onClick={() => router.push("/dashboard")}
                 >
-                    <BookOpenIcon className="h-6 w-6" />
+                    <BookOpenIcon className="h-5 w-5" />
                     <span>Dashboard</span>
                 </div>
             )}
             {paths?.find((path) => path == "profile") ? (
-                <div className="flex text-blue-500 flex-row gap-2 text-center items-center hover:cursor-pointer hover:text-blue-500">
-                    <UserIcon className="h-6 w-6" />
+                <div className="flex text-blue-500 flex-row gap-3 text-center items-center hover:cursor-pointer p-3 rounded-lg bg-blue-50 dark:bg-blue-950/50 transition-colors select-none">
+                    <UserIcon className="h-5 w-5" />
                     <span>Profile</span>
                 </div>
             ) : (
                 <div
-                    className="flex opacity-75 flex-row gap-2 text-center items-center hover:cursor-pointer hover:text-blue-500"
+                    className="flex opacity-75 flex-row gap-3 text-center items-center hover:cursor-pointer hover:text-blue-500 p-3 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-950/50 transition-colors select-none"
                     onClick={() => router.push("/profile")}
                 >
-                    <UserIcon className="h-6 w-6" />
+                    <UserIcon className="h-5 w-5" />
                     <span>Profile</span>
                 </div>
             )}
