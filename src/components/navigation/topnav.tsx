@@ -31,43 +31,38 @@ export default function TopNav({
     }, []);
 
     return (
-        <div>
-            <nav className="flex flex-row justify-between border-b border-secondary p-4 text-xl font-bold md:px-44">
-                <div className="my-auto select-none">
-                    <div className="flex flex-row gap-4">
-                        <div
-                            onClick={() => {
-                                if (session?.user) router.push("/dashboard");
-                                else router.push("/");
-                            }}
-                            className="hover:cursor-pointer"
-                        >
-                            <span className="text-blue-600">Expense</span>
-                            Tracker
-                        </div>
-                        {screenWidth > 900 ? (
-                            <div className="flex flex-row gap-2 m-auto">
-                                <div className="flex text-center flex-row gap-2 text-lg mt-[1px] font-normal opacity-75">
-                                    <span className="text-slate-500">/</span>
-                                    <span>{paths[0]}</span>
-                                </div>
-                            </div>
-                        ) : (
-                            <></>
-                        )}
+        <nav className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            <div className="container flex h-14 items-center px-4 md:px-8">
+                <div className="flex items-center gap-4">
+                    <div
+                        onClick={() => {
+                            if (session?.user) router.push("/dashboard");
+                            else router.push("/");
+                        }}
+                        className="flex items-center gap-2 hover:cursor-pointer"
+                    >
+                        <span className="text-xl font-semibold">
+                            <span className="text-primary">Expense</span>Tracker
+                        </span>
                     </div>
+                    {screenWidth > 900 && paths?.[0] && (
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <span>/</span>
+                            <span className="capitalize">{paths[0]}</span>
+                        </div>
+                    )}
                 </div>
-                {screenWidth < 900 ? (
-                    <div>
+                <div className="flex flex-1 items-center justify-end gap-2">
+                    {screenWidth < 900 ? (
                         <Bars3Icon
                             onClick={() => setToggleHamburgerMenu(true)}
-                            className="size-8 hover:cursor-pointer"
+                            className="h-6 w-6 hover:cursor-pointer"
                         />
-                    </div>
-                ) : (
-                    <PcNavBar />
-                )}
-            </nav>
-        </div>
+                    ) : (
+                        <PcNavBar />
+                    )}
+                </div>
+            </div>
+        </nav>
     );
 }

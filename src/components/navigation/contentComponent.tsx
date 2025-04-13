@@ -19,12 +19,14 @@ export default function ContentComponent({ children }: ChildComponentProps) {
     return (
         <div className="min-h-screen">
             {userInfoQuery.isSuccess ? (
-                <div className="flex flex-row gap-0 md:gap-0 min-h-screen">
-                    <SideNavBar />
-                    {children}
+                <div className="flex flex-col md:flex-row gap-0 min-h-screen">
+                    <div className="hidden md:block">
+                        <SideNavBar />
+                    </div>
+                    <main className="flex-1 overflow-x-hidden">{children}</main>
                 </div>
             ) : (
-                <div>{children}</div>
+                <main className="flex-1 overflow-x-hidden">{children}</main>
             )}
         </div>
     );

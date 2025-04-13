@@ -177,10 +177,10 @@ export default function ExpenseProfileInfoCard({ id }: { id: string }) {
                 </div>
             ) : (
                 <>
-                    <div className="flex justify-end mb-4">
+                    <div className="flex justify-end sm:justify-startw-full">
                         <AlertDialog>
                             <AlertDialogTrigger asChild>
-                                <Button className="text-base bg-red-500 hover:bg-red-600 font-semibold">
+                                <Button className="text-base mt-4 bg-red-500 hover:bg-red-600 font-semibold w-full sm:w-fit">
                                     <TrashIcon className="w-5" />
                                     <span className="ml-2">Delete Profile</span>
                                 </Button>
@@ -210,8 +210,8 @@ export default function ExpenseProfileInfoCard({ id }: { id: string }) {
                             </AlertDialogContent>
                         </AlertDialog>
                     </div>
-                    <div className="flex flex-row pt-10 gap-6">
-                        <div className="h-fit border-2 rounded-md p-10 w-1/4">
+                    <div className="flex flex-col sm:flex-row pt-8 gap-6">
+                        <div className="h-fit border-2 rounded-md p-10 w-full sm:w-1/4">
                             <div className="flex flex-row items-center justify-between space-y-0 pb-2">
                                 <HeartIcon
                                     onClick={() => {
@@ -295,11 +295,11 @@ export default function ExpenseProfileInfoCard({ id }: { id: string }) {
                                 </div>
                             </div>
                         </div>
-                        <div className="w-3/4 p-8 pt-16 flex gap-8 justify-center max-h-[432px] border-2 rounded-md">
-                            <div>
+                        <div className="w-full sm:w-3/4 p-8 pt-16 flex flex-col sm:flex-row gap-8 justify-center border-2 rounded-md">
+                            <div className="w-full sm:w-1/2 h-[300px]">
                                 <Pie data={data} />
                             </div>
-                            <div className="flex pt-36 justify-self-end max-h-[300px] ">
+                            <div className="w-full sm:w-1/2 h-[300px] flex justify-center">
                                 <Bar data={barData} options={barOptions} />
                             </div>
                         </div>

@@ -231,29 +231,31 @@ export default function ExpenseProfileExpensesCard({ id }: Props) {
     }
 
     return (
-        <div className="w-full p-6">
+        <div className="w-full p-4 sm:p-6">
             {/* Header */}
-            <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold">Expenses List</h2>
-                <div className="flex items-center gap-4">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+                <h2 className="text-lg sm:text-xl font-semibold">
+                    Expenses List
+                </h2>
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full sm:w-auto">
                     <Input
                         type="text"
                         placeholder="Search expenses..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-[200px]"
+                        className="w-full sm:w-[200px]"
                     />
                     <select
                         value={selectedCategory}
                         onChange={(e) => setSelectedCategory(e.target.value)}
-                        className="flex h-10 w-[180px] rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                        className="flex h-10 w-full sm:w-[180px] rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                     >
                         <option value="all">All Categories</option>
                         {renderExpenseTypeOptions(expenseTypesQuery)}
                     </select>
                     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                         <DialogTrigger asChild>
-                            <Button>
+                            <Button className="w-full sm:w-auto">
                                 <PlusIcon className="h-4 w-4 mr-2" />
                                 New Expense
                             </Button>
@@ -366,14 +368,14 @@ export default function ExpenseProfileExpensesCard({ id }: Props) {
             </div>
 
             {/* Expenses Table */}
-            <div className="rounded-md border">
+            <div className="rounded-md border overflow-x-auto">
                 {!expensesQuery.data || expensesQuery.data.length === 0 ? (
                     <div className="text-center p-8 text-muted-foreground">
                         No expenses found. Create one using the "New Expense"
                         button.
                     </div>
                 ) : (
-                    <table className="w-full text-sm">
+                    <table className="w-full text-sm min-w-[600px]">
                         <thead>
                             {table.getHeaderGroups().map((headerGroup) => (
                                 <tr
@@ -383,7 +385,7 @@ export default function ExpenseProfileExpensesCard({ id }: Props) {
                                     {headerGroup.headers.map((header) => (
                                         <th
                                             key={header.id}
-                                            className="h-10 px-4 text-left align-middle font-medium cursor-pointer hover:bg-muted"
+                                            className="h-10 px-2 sm:px-4 text-left align-middle font-medium cursor-pointer hover:bg-muted"
                                             onClick={header.column.getToggleSortingHandler()}
                                         >
                                             <div className="flex items-center gap-2">
@@ -413,7 +415,7 @@ export default function ExpenseProfileExpensesCard({ id }: Props) {
                                     {row.getVisibleCells().map((cell) => (
                                         <td
                                             key={cell.id}
-                                            className="p-4 align-middle"
+                                            className="p-2 sm:p-4 align-middle"
                                         >
                                             {flexRender(
                                                 cell.column.columnDef.cell,
@@ -429,35 +431,37 @@ export default function ExpenseProfileExpensesCard({ id }: Props) {
             </div>
 
             {/* Pagination */}
-            <div className="flex items-center justify-between space-x-2 py-4">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4">
                 <div className="flex-1 text-sm text-muted-foreground">
                     {table.getFilteredRowModel().rows.length} expense(s) total
                 </div>
-                <div className="flex items-center space-x-2">
-                    <button
-                        className="rounded border p-1 px-2 disabled:opacity-50"
-                        onClick={() => table.previousPage()}
-                        disabled={!table.getCanPreviousPage()}
-                    >
-                        Previous
-                    </button>
-                    <span className="text-sm">
-                        Page {table.getState().pagination.pageIndex + 1} of{" "}
-                        {table.getPageCount()}
-                    </span>
-                    <button
-                        className="rounded border p-1 px-2 disabled:opacity-50"
-                        onClick={() => table.nextPage()}
-                        disabled={!table.getCanNextPage()}
-                    >
-                        Next
-                    </button>
+                <div className="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
+                    <div className="flex items-center gap-2 w-full sm:w-auto">
+                        <button
+                            className="rounded border p-1 px-2 disabled:opacity-50 flex-1 sm:flex-none"
+                            onClick={() => table.previousPage()}
+                            disabled={!table.getCanPreviousPage()}
+                        >
+                            Previous
+                        </button>
+                        <span className="text-sm whitespace-nowrap">
+                            Page {table.getState().pagination.pageIndex + 1} of{" "}
+                            {table.getPageCount()}
+                        </span>
+                        <button
+                            className="rounded border p-1 px-2 disabled:opacity-50 flex-1 sm:flex-none"
+                            onClick={() => table.nextPage()}
+                            disabled={!table.getCanNextPage()}
+                        >
+                            Next
+                        </button>
+                    </div>
                     <select
                         value={table.getState().pagination.pageSize}
                         onChange={(e) => {
                             table.setPageSize(Number(e.target.value));
                         }}
-                        className="rounded border p-1"
+                        className="rounded border p-1 w-full sm:w-auto"
                     >
                         {[5, 10, 20].map((pageSize) => (
                             <option key={pageSize} value={pageSize}>
