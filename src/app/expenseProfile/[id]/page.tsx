@@ -3,6 +3,7 @@
 import { useState } from "react";
 import ExpenseProfileExpensesCard from "~/components/cards/expenseProfileExpensesCard";
 import ExpenseProfileInfoCard from "~/components/cards/expenseProfileInfoCard";
+import ExpenseProfileAICard from "~/components/cards/expenseProfileAICard";
 
 interface Props {
     params: {
@@ -27,7 +28,7 @@ export default function ExpenseProfile({ params }: Props) {
                         <span>Info</span>
                     </div>
                     <div
-                        className={`px-6 py-2 border-b-2 w-[200px] flex justify-center hover:cursor-pointer ${
+                        className={`px-6 py-2 border-b-2 border-r-2 w-[200px] flex justify-center hover:cursor-pointer ${
                             selectedTab === "expenses"
                                 ? "border-b-blue-500"
                                 : ""
@@ -36,12 +37,22 @@ export default function ExpenseProfile({ params }: Props) {
                     >
                         <span>Expenses</span>
                     </div>
+                    <div
+                        className={`px-6 py-2 border-b-2 w-[200px] flex justify-center hover:cursor-pointer ${
+                            selectedTab === "ai" ? "border-b-blue-500" : ""
+                        }`}
+                        onClick={() => setSelectedTab("ai")}
+                    >
+                        <span>AI</span>
+                    </div>
                 </div>
             </div>
             {selectedTab === "info" ? (
                 <ExpenseProfileInfoCard id={id} />
             ) : selectedTab === "expenses" ? (
                 <ExpenseProfileExpensesCard id={id} />
+            ) : selectedTab === "ai" ? (
+                <ExpenseProfileAICard id={id} />
             ) : (
                 <></>
             )}
