@@ -8,7 +8,7 @@ import axios from "axios";
 import ExpenseProfileCard from "~/components/cards/expenseProfileCard";
 import { TExpenseProfile } from "~/types/types";
 import { Dialog, DialogTrigger } from "~/components/ui/dialog";
-import CreateExpenseProfileComponent from "~/components/basic/createExpenseProfileComponent";
+import CreateExpenseProfileComponent from "~/components/basic/createExpenseProfile";
 
 export default function DashboardPage() {
     const [screenWidth, setScreenWidth] = useState(0);

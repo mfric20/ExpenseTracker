@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { TExpenseProfile } from "~/types/types";
 import { HeartIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { Dialog, DialogTrigger } from "@radix-ui/react-dialog";
-import EditExpenseProfileComponent from "../basic/editExpenseProfileComponent";
+import EditExpenseProfileComponent from "../basic/editExpenseProfile";
 import React from "react";
 import { Pie } from "react-chartjs-2";
 import { Bar } from "react-chartjs-2";
