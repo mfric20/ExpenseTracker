@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useState } from "react";
 import { Button } from "~/components/ui/button";
@@ -11,6 +11,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "~/components/ui/select";
+import ReactMarkdown from "react-markdown";
 
 interface Message {
     role: "user" | "assistant";
@@ -115,36 +116,44 @@ export default function ExpenseProfileAICard({ id }: Props) {
                     </SelectContent>
                 </Select>
             </div>
-            <ScrollArea className="flex-1 rounded-md border p-4 mb-4">
-                <div className="space-y-4">
-                    {messages.map((message, index) => (
+            <ScrollArea className="h-[400px] w-full rounded-md border p-4">
+                {messages.map((message, index) => (
+                    <div
+                        key={index}
+                        className={`mb-4 ${
+                            message.role === "user" ? "text-right" : "text-left"
+                        }`}
+                    >
                         <div
-                            key={index}
-                            className={`flex ${
+                            className={`inline-block rounded-lg p-3 ${
                                 message.role === "user"
-                                    ? "justify-end"
-                                    : "justify-start"
+                                    ? "bg-primary text-primary-foreground"
+                                    : "bg-muted"
                             }`}
                         >
-                            <div
-                                className={`max-w-[80%] rounded-lg p-3 ${
-                                    message.role === "user"
-                                        ? "bg-blue-500 text-white"
-                                        : "bg-gray-100 dark:bg-gray-800"
-                                }`}
-                            >
-                                {message.content}
-                            </div>
+                            {message.role === "assistant" ? (
+                                <div
+                                    className="prose prose-sm dark:prose-invert max-w-none
+                                    [&>h1]:text-xl [&>h1]:font-bold [&>h1]:mb-4 [&>h1]:text-foreground
+                                    [&>h2]:text-lg [&>h2]:font-semibold [&>h2]:mb-3 [&>h2]:text-foreground
+                                    [&>h3]:text-base [&>h3]:font-semibold [&>h3]:mb-2 [&>h3]:text-foreground
+                                    [&>p]:mb-3 [&>p]:text-foreground/90 [&>p]:leading-relaxed
+                                    [&>ul]:list-disc [&>ul]:pl-6 [&>ul]:mb-4 [&>ul]:space-y-1
+                                    [&>ol]:list-decimal [&>ol]:pl-6 [&>ol]:mb-4 [&>ol]:space-y-1
+                                    [&>li]:text-foreground/90
+                                    [&>strong]:font-semibold [&>strong]:text-foreground
+                                    [&>hr]:my-4 [&>hr]:border-border"
+                                >
+                                    <ReactMarkdown>
+                                        {message.content}
+                                    </ReactMarkdown>
+                                </div>
+                            ) : (
+                                message.content
+                            )}
                         </div>
-                    ))}
-                    {isLoading && (
-                        <div className="flex justify-start">
-                            <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-3">
-                                Thinking...
-                            </div>
-                        </div>
-                    )}
-                </div>
+                    </div>
+                ))}
             </ScrollArea>
             <div className="flex gap-2">
                 <Input

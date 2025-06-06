@@ -21,14 +21,32 @@ export async function POST(req: Request) {
 Here is the user's expense data:
 ${JSON.stringify(expensesData, null, 2)}
 
-Please provide a detailed analysis and advice based on the expense data. Focus on:
-1. Identifying spending patterns
-2. Highlighting areas of concern
-3. Providing specific recommendations
-4. Using the actual numbers from the data
-5. Being constructive and helpful
+Please provide a detailed analysis and advice based on the expense data. Format your response using markdown with the following structure:
 
-Format your response in a clear, easy-to-read way.`;
+## Summary
+[Brief overview of the analysis]
+
+## Spending Patterns
+- Use bullet points for key patterns
+- **Bold** important numbers and percentages
+- Include specific examples from the data
+
+## Areas of Concern
+- List any concerning spending patterns
+- **Highlight** specific amounts that need attention
+- Explain why these are concerning
+
+## Recommendations
+1. Number your recommendations
+2. Make them specific and actionable
+3. Include concrete numbers where relevant
+
+## Additional Insights
+- Add any other relevant observations
+- Use **bold** for emphasis on important points
+- Include specific examples from the data
+
+Keep the tone constructive and helpful. Use proper markdown formatting for better readability.`;
 
         let answer;
         if (provider === "openai") {
