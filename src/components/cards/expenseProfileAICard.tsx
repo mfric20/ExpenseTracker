@@ -116,7 +116,7 @@ export default function ExpenseProfileAICard({ id }: Props) {
                     </SelectContent>
                 </Select>
             </div>
-            <ScrollArea className="h-[400px] w-full rounded-md border p-4">
+            <ScrollArea className="h-[500px] w-full rounded-md border p-4 mb-4">
                 {messages.map((message, index) => (
                     <div
                         key={index}
@@ -154,6 +154,13 @@ export default function ExpenseProfileAICard({ id }: Props) {
                         </div>
                     </div>
                 ))}
+                {isLoading && (
+                    <div className="w-full flex justify-center items-center py-4">
+                        <span className="text-muted-foreground">
+                            Analyzing your expenses...
+                        </span>
+                    </div>
+                )}
             </ScrollArea>
             <div className="flex gap-2">
                 <Input

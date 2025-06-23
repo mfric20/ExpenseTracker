@@ -45,9 +45,9 @@ export default function HomePage() {
                 </div>
                 <div className="w-full">
                     <img
-                        src="phone.png"
+                        src="phone.gif"
                         alt="landingpage_photo"
-                        className="m-auto w-[600px]"
+                        className="m-auto w-[300px]"
                     />
                 </div>
             </div>
